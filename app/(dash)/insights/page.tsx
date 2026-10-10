@@ -15,23 +15,23 @@ export default async function InsightsPage() {
     <div>
       <PageHeader
         kicker="After it is live"
-        title="Insights"
+        title="Analytics"
         lede="Likes, comments, reach, saves, and shares from the Instagram professional account once Facebook Login is connected."
       />
       {error && (
-        <div className="border border-[#E01F26] bg-[#F7F3EA] p-4 text-sm">
+        <div className="rounded-2xl border border-[#E01F26]/40 bg-red-50 p-4 text-sm">
           {error} Check that the token still has instagram_manage_insights and pages_read_engagement.
         </div>
       )}
       {data && !data.connected && (
-        <div className="border border-[#0A0A0A] bg-[#F7F3EA] p-6">
-          <h2 className="font-display text-4xl">Not connected</h2>
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-6">
+          <h2 className="text-xl font-semibold tracking-tight">Not connected</h2>
           <p className="mt-2 max-w-xl text-sm">
             {metaConfigured()
               ? "Meta app credentials are present. Connect @preachthegospel.store from Instagram settings."
               : "Add META_APP_ID and META_APP_SECRET, then connect the account. Until then this page has nothing to chart."}
           </p>
-          <Link href="/settings" className="mt-4 inline-block font-mono text-[10px] uppercase tracking-[0.16em] underline">
+          <Link href="/settings" className="mt-4 inline-block text-xs font-medium underline">
             Instagram settings
           </Link>
         </div>
@@ -43,10 +43,10 @@ export default async function InsightsPage() {
             <Metric label="Following" value={data.follows} />
             <Metric label="Media" value={data.mediaCount} />
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#5c584e]">@{data.username}</p>
-          <div className="overflow-x-auto border border-[#0A0A0A] bg-[#F7F3EA]">
+          <p className="text-xs font-medium text-slate-500">@{data.username}</p>
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
             <table className="w-full min-w-[760px] text-left text-sm">
-              <thead className="border-b border-[#0A0A0A] font-mono text-[10px] uppercase tracking-[0.14em]">
+              <thead className="border-b border-slate-200 text-xs font-medium">
                 <tr>
                   <th className="px-3 py-2">Post</th>
                   <th className="px-3 py-2">Type</th>
@@ -60,7 +60,7 @@ export default async function InsightsPage() {
               </thead>
               <tbody>
                 {data.media.map((item) => (
-                  <tr key={item.id} className="border-b border-[#0A0A0A]/10">
+                  <tr key={item.id} className="border-b border-slate-200/10">
                     <td className="max-w-xs px-3 py-3">
                       <a href={item.permalink || "#"} className="line-clamp-2 underline" target="_blank" rel="noreferrer">
                         {item.caption.slice(0, 80) || item.id}
@@ -87,9 +87,9 @@ export default async function InsightsPage() {
 
 function Metric({ label, value }: { label: string; value: number | null }) {
   return (
-    <div className="border border-[#0A0A0A] bg-[#F7F3EA] p-4">
-      <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#767778]">{label}</div>
-      <div className="font-display text-5xl leading-none">{value ?? "—"}</div>
+    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4">
+      <div className="text-xs font-medium text-slate-400">{label}</div>
+      <div className="text-3xl font-semibold tracking-tight">{value ?? "—"}</div>
     </div>
   );
 }

@@ -1,37 +1,44 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-display: var(--font-bodoni);
-  --font-script: var(--font-yellowtail);
-  --font-mono: var(--font-space);
-  --font-sans: var(--font-franklin);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter);
+  --font-script: var(--font-inter);
+  --font-mono: var(--font-inter);
+  --color-navy: #0e2340;
+  --color-action: #2f6bff;
+  --color-canvas: #f4f6f8;
+  --color-ptg: #e01f26;
 }
 
 html {
-  background: #e9dfc9;
+  background: #f4f6f8;
 }
 
 body {
   margin: 0;
-  background: #e9dfc9;
-  color: #0a0a0a;
-  font-family: var(--font-franklin), "Libre Franklin", sans-serif;
+  background: #f4f6f8;
+  color: #152033;
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
 .font-display {
-  font-family: var(--font-bodoni), "Bodoni Moda", serif;
-  font-weight: 700;
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-weight: 650;
+  letter-spacing: -0.03em;
 }
 
 .font-script {
-  font-family: var(--font-yellowtail), "Yellowtail", cursive;
+  font-family: var(--font-inter), Inter, sans-serif;
+  font-weight: 600;
 }
 
 .font-mono {
-  font-family: var(--font-space), "Space Mono", ui-monospace, monospace;
+  font-family: var(--font-inter), Inter, ui-sans-serif, sans-serif;
+  font-variant-numeric: tabular-nums;
 }
 
 ::selection {
-  background: #e01f26;
-  color: #f1ebdd;
+  background: #2f6bff;
+  color: white;
 }

@@ -40,30 +40,30 @@ export default async function PostsPage({
         actions={
           canEdit(user.role) ? (
             <Button asChild>
-              <Link href="/posts/new">New post</Link>
+              <Link href="/posts/new">Create Post</Link>
             </Button>
           ) : null
         }
       />
       <form className="mb-4 flex flex-wrap gap-2" method="get">
-        <input name="q" defaultValue={params.q || ""} placeholder="Search" className="border border-[#0A0A0A] bg-white px-3 py-2 text-sm" />
-        <select name="status" defaultValue={status || ""} className="border border-[#0A0A0A] bg-white px-3 py-2 text-sm">
+        <input name="q" defaultValue={params.q || ""} placeholder="Search" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" />
+        <select name="status" defaultValue={status || ""} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
           <option value="">Any status</option>
           {POST_STATUSES.map((item) => (
             <option key={item} value={item}>{statusLabel(item)}</option>
           ))}
         </select>
-        <select name="type" defaultValue={postType || ""} className="border border-[#0A0A0A] bg-white px-3 py-2 text-sm">
+        <select name="type" defaultValue={postType || ""} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
           <option value="">Any type</option>
           {POST_TYPES.map((item) => (
             <option key={item} value={item}>{postTypeLabel(item)}</option>
           ))}
         </select>
-        <button className="bg-[#0A0A0A] px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1EBDD]">Filter</button>
+        <button className="rounded-lg bg-[#2F6BFF] px-3 py-2 text-sm font-medium text-white">Filter</button>
       </form>
-      <div className="overflow-x-auto border border-[#0A0A0A] bg-[#F7F3EA]">
+      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
         <table className="w-full min-w-[760px] text-left text-sm">
-          <thead className="border-b border-[#0A0A0A] font-mono text-[10px] uppercase tracking-[0.14em]">
+          <thead className="border-b border-slate-200 text-xs font-medium">
             <tr>
               <th className="px-3 py-2">#</th>
               <th className="px-3 py-2">Title</th>
@@ -75,11 +75,11 @@ export default async function PostsPage({
           </thead>
           <tbody>
             {posts.map((post) => (
-              <tr key={post.id} className="border-b border-[#0A0A0A]/10">
+              <tr key={post.id} className="border-b border-slate-200/10">
                 <td className="px-3 py-3 font-mono text-xs">{post.planNumber ? String(post.planNumber).padStart(2, "0") : "—"}</td>
                 <td className="px-3 py-3">
                   <Link href={`/posts/${post.id}`} className="font-medium underline">{post.title}</Link>
-                  <div className="text-xs text-[#5c584e]">{post.bibleReference}</div>
+                  <div className="text-xs text-slate-500">{post.bibleReference}</div>
                 </td>
                 <td className="px-3 py-3 font-mono text-[11px]">{post.scheduledAt ? chicagoStamp(post.scheduledAt) : "Unscheduled"}</td>
                 <td className="px-3 py-3">{postTypeLabel(post.postType)}</td>
@@ -88,7 +88,7 @@ export default async function PostsPage({
                   {canEdit(user.role) && (
                     <form action={duplicatePost}>
                       <input type="hidden" name="id" value={post.id} />
-                      <button className="font-mono text-[10px] uppercase tracking-[0.14em] underline">Copy</button>
+                      <button className="text-xs font-medium underline">Copy</button>
                     </form>
                   )}
                 </td>

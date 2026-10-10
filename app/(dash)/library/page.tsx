@@ -16,18 +16,18 @@ export default async function LibraryPage() {
     <div>
       <PageHeader
         kicker="Files"
-        title="Library"
+        title="Media"
         lede="Quote cards, photos, and reels you can attach to any post. On Vercel these go to Blob. Locally they stay in public/uploads."
         actions={canEdit(user.role) ? <LibraryUpload /> : null}
       />
       {assets.length === 0 && (
-        <div className="border border-dashed border-[#0A0A0A] bg-[#F7F3EA] p-8 text-sm">
+        <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-sm">
           Nothing in the library yet. Upload a JPEG, PNG, or MP4, or run the seed to pull in the five quote cards.
         </div>
       )}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {assets.map((asset) => (
-          <article key={asset.id} className="border border-[#0A0A0A] bg-[#F7F3EA]">
+          <article key={asset.id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             {asset.mimeType.startsWith("video/") ? (
               <video src={asset.url} className="aspect-square w-full bg-[#0A0A0A] object-cover" controls />
             ) : (
@@ -36,7 +36,7 @@ export default async function LibraryPage() {
             )}
             <div className="space-y-2 p-3">
               <div className="truncate text-sm">{asset.filename}</div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#767778]">
+              <div className="text-xs text-slate-400">
                 {asset.storage} · {Math.ceil(asset.size / 1024)} KB
               </div>
               <ul className="text-xs">
@@ -45,12 +45,12 @@ export default async function LibraryPage() {
                     <a className="underline" href={`/posts/${link.post.id}`}>{link.post.title}</a>
                   </li>
                 ))}
-                {asset.posts.length === 0 && <li className="text-[#767778]">Not on a post</li>}
+                {asset.posts.length === 0 && <li className="text-slate-400">Not on a post</li>}
               </ul>
               {canEdit(user.role) && (
                 <form action={deleteAsset}>
                   <input type="hidden" name="id" value={asset.id} />
-                  <button className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#E01F26]">Remove</button>
+                  <button className="text-xs font-medium text-[#E01F26]">Remove</button>
                 </form>
               )}
             </div>

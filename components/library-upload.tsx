@@ -8,7 +8,7 @@ export function LibraryUpload() {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   return (
-    <label className="inline-flex h-10 cursor-pointer items-center bg-[#0A0A0A] px-4 font-mono text-[11px] uppercase tracking-[0.14em] text-[#F1EBDD]">
+    <label className="inline-flex h-10 cursor-pointer items-center rounded-lg bg-[#2F6BFF] px-4 text-sm font-medium text-white shadow-sm">
       {pending ? "Uploading" : "Upload"}
       <input
         type="file"

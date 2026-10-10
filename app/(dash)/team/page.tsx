@@ -19,11 +19,11 @@ export default async function TeamPage() {
         lede="Owners and admins approve posts and invite the desk. Editors draft. Viewers can read the calendar and nothing else."
       />
       {!canManageUsers(user.role) ? (
-        <ul className="border border-[#0A0A0A] bg-[#F7F3EA]">
+        <ul className="rounded-2xl border border-slate-200 bg-white shadow-sm">
           {people.map((person) => (
-            <li key={person.id} className="flex items-center justify-between border-b border-[#0A0A0A]/10 px-4 py-3 text-sm">
+            <li key={person.id} className="flex items-center justify-between border-b border-slate-200/10 px-4 py-3 text-sm">
               <span>{person.name}</span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.14em]">{person.role.toLowerCase()}</span>
+              <span className="text-xs font-medium">{person.role.toLowerCase()}</span>
             </li>
           ))}
         </ul>

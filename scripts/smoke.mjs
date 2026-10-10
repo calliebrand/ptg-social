@@ -22,7 +22,7 @@ function check(name, ok, detail = "") {
 }
 
 await page.goto(`${base}/login`, { waitUntil: "networkidle0" });
-check("login page", (await page.content()).includes("Enter the desk"));
+check("login page", (await page.content()).includes("Sign in"));
 await page.type('input[name="email"]', "mike@preachthegospel.store");
 await page.type('input[name="password"]', "ptg-local-2026");
 await Promise.all([

@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { CalendarBoard, type CalPost } from "@/components/calendar-board";
-import { PageHeader } from "@/components/page-header";
 import { StatusBadge, typeAccent } from "@/components/status-badge";
 import { requireUser } from "@/lib/session";
 import { canEdit } from "@/lib/permissions";
 import { POST_STATUSES, POST_TYPES, postTypeLabel, statusLabel } from "@/lib/posts";
+import { Button } from "@/components/ui/button";
 import {
   chicagoDateKey,
   chicagoStamp,
   chicagoTimeValue,
+  chicagoToday,
   monthGrid,
   monthTitle,
   parseMonthParam,
@@ -18,6 +19,7 @@ import {
   weekDays,
 } from "@/lib/time";
 import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 export default async function CalendarPage({
   searchParams,
@@ -26,7 +28,7 @@ export default async function CalendarPage({
 }) {
   const params = await searchParams;
   const user = await requireUser();
-  const view = params.view === "week" || params.view === "list" || params.view === "grid" ? params.view : "month";
+  const view = params.view === "month" || params.view === "list" || params.view === "grid" ? params.view : "week";
   const month = parseMonthParam(params.month);
   const anchor = params.week && /^\d{4}-\d{2}-\d{2}$/.test(params.week) ? params.week : `${month.key}-12`;
   const days = view === "week" ? weekDays(anchor) : monthGrid(month.year, month.month);
@@ -78,28 +80,56 @@ export default async function CalendarPage({
   const weekPrev = days[0];
   const weekNextStart = days[6];
 
+  const rangeLabel =
+    view === "week"
+      ? `${prettyDay(days[0])} – ${prettyDay(days[6])}, ${days[0].slice(0, 4)}`
+      : view === "list"
+        ? "All posts"
+        : view === "grid"
+          ? monthTitle(month.year, month.month)
+          : monthTitle(month.year, month.month);
+  const prevHref =
+    view === "week"
+      ? `/calendar?view=week&week=${shiftDay(weekPrev, -7)}&month=${month.key}`
+      : `/calendar?view=${view}&month=${prevMonth}`;
+  const nextHref =
+    view === "week"
+      ? `/calendar?view=week&week=${shiftDay(weekNextStart, 1)}&month=${month.key}`
+      : `/calendar?view=${view}&month=${nextMonth}`;
+
   return (
     <div>
-      <PageHeader
-        kicker="America/Chicago"
-        title={
-          view === "week"
-            ? `${prettyDay(days[0])} – ${prettyDay(days[6])}`
-            : view === "list"
-              ? "List"
-              : view === "grid"
-                ? "Grid"
-                : monthTitle(month.year, month.month)
-        }
-        lede="Drag a post to another day to keep its time and change the date. Published posts stay put."
-      />
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-2">
-          <ViewLink current={view} view="month" month={month.key} week={anchor}>
-            Month
-          </ViewLink>
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Content Calendar</h1>
+        {canEdit(user.role) && (
+          <Button asChild>
+            <Link href="/posts/new">
+              <Plus className="h-4 w-4" />
+              Create Post
+            </Link>
+          </Button>
+        )}
+      </div>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-1">
+          {view !== "list" && (
+            <Link href={prevHref} aria-label="Previous" className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-white">
+              <ChevronLeft className="h-4 w-4" />
+            </Link>
+          )}
+          <div className="min-w-40 text-center text-sm font-semibold text-slate-800">{rangeLabel}</div>
+          {view !== "list" && (
+            <Link href={nextHref} aria-label="Next" className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-white">
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          )}
+        </div>
+        <div className="flex rounded-xl bg-white p-1 shadow-sm">
           <ViewLink current={view} view="week" month={month.key} week={anchor}>
             Week
+          </ViewLink>
+          <ViewLink current={view} view="month" month={month.key} week={anchor}>
+            Month
           </ViewLink>
           <ViewLink current={view} view="list" month={month.key} week={anchor}>
             List
@@ -108,29 +138,6 @@ export default async function CalendarPage({
             Grid
           </ViewLink>
         </div>
-        {view !== "list" && (
-          <div className="flex gap-2 font-mono text-[10px] uppercase tracking-[0.14em]">
-            {view === "week" ? (
-              <>
-                <Link className="border border-[#0A0A0A] px-3 py-2" href={`/calendar?view=week&week=${shiftDay(weekPrev, -7)}&month=${month.key}`}>
-                  Prev
-                </Link>
-                <Link className="border border-[#0A0A0A] px-3 py-2" href={`/calendar?view=week&week=${shiftDay(weekNextStart, 1)}&month=${month.key}`}>
-                  Next
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link className="border border-[#0A0A0A] px-3 py-2" href={`/calendar?view=${view}&month=${prevMonth}`}>
-                  Prev
-                </Link>
-                <Link className="border border-[#0A0A0A] px-3 py-2" href={`/calendar?view=${view}&month=${nextMonth}`}>
-                  Next
-                </Link>
-              </>
-            )}
-          </div>
-        )}
       </div>
 
       {(view === "month" || view === "week") && (
@@ -142,6 +149,8 @@ export default async function CalendarPage({
           month={month.month}
           canEdit={canEdit(user.role)}
           dimOutside={view === "month"}
+          mode={view === "week" ? "week" : "month"}
+          today={chicagoToday()}
         />
       )}
 
@@ -155,9 +164,9 @@ export default async function CalendarPage({
               name="q"
               defaultValue={params.q || ""}
               placeholder="Search title"
-              className="border border-[#0A0A0A] bg-white px-3 py-2 text-sm"
+              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm"
             />
-            <select name="status" defaultValue={params.status || ""} className="border border-[#0A0A0A] bg-white px-3 py-2 text-sm">
+            <select name="status" defaultValue={params.status || ""} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm">
               <option value="">Any status</option>
               {["DRAFT", "IN_REVIEW", "APPROVED", "SCHEDULED", "PUBLISHED", "FAILED"].map((status) => (
                 <option key={status} value={status}>
@@ -165,7 +174,7 @@ export default async function CalendarPage({
                 </option>
               ))}
             </select>
-            <select name="type" defaultValue={params.type || ""} className="border border-[#0A0A0A] bg-white px-3 py-2 text-sm">
+            <select name="type" defaultValue={params.type || ""} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm">
               <option value="">Any type</option>
               {["QUOTE_CARD", "REEL", "CAROUSEL", "PHOTO", "ENGAGEMENT"].map((type) => (
                 <option key={type} value={type}>
@@ -173,13 +182,13 @@ export default async function CalendarPage({
                 </option>
               ))}
             </select>
-            <button className="border border-[#0A0A0A] bg-[#0A0A0A] px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1EBDD]">
+            <button className="rounded-lg bg-[#2F6BFF] px-3 py-2 text-sm font-medium text-white">
               Filter
             </button>
           </form>
-          <div className="overflow-x-auto border border-[#0A0A0A] bg-[#F7F3EA]">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
             <table className="w-full min-w-[720px] text-left text-sm">
-              <thead className="border-b border-[#0A0A0A] font-mono text-[10px] uppercase tracking-[0.14em]">
+              <thead className="border-b border-slate-100 text-xs font-medium text-slate-400">
                 <tr>
                   <th className="px-3 py-2">When</th>
                   <th className="px-3 py-2">Title</th>
@@ -189,8 +198,8 @@ export default async function CalendarPage({
               </thead>
               <tbody>
                 {allForList.map((post) => (
-                  <tr key={post.id} className="border-b border-[#0A0A0A]/10">
-                    <td className="px-3 py-2 font-mono text-[11px]">
+                  <tr key={post.id} className="border-b border-slate-100">
+                    <td className="px-3 py-2 text-xs text-slate-500">
                       {post.scheduledAt ? chicagoStamp(post.scheduledAt) : "Unscheduled"}
                     </td>
                     <td className="px-3 py-2">
@@ -252,8 +261,8 @@ function ViewLink({
     <Link
       href={`/calendar?view=${view}&month=${month}&week=${week}`}
       className={cn(
-        "border border-[#0A0A0A] px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em]",
-        current === view ? "bg-[#0A0A0A] text-[#F1EBDD]" : "bg-transparent",
+        "rounded-lg px-3 py-1.5 text-sm font-medium",
+        current === view ? "bg-[#2F6BFF] text-white" : "text-slate-500 hover:text-slate-800",
       )}
     >
       {children}
@@ -267,21 +276,21 @@ function FeedGrid({ posts }: { posts: CalPost[] }) {
     <div>
       <div className="mb-3 flex items-end justify-between">
         <div>
-          <div className="font-display text-3xl">@preachthegospel.store</div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#767778]">
+          <div className="text-lg font-semibold">@preachthegospel.store</div>
+          <div className="text-xs text-slate-400">
             Profile grid of this range, newest first
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-1 border border-[#0A0A0A] bg-[#0A0A0A] p-1">
+      <div className="grid grid-cols-3 gap-1 overflow-hidden rounded-2xl bg-white p-1 shadow-sm">
         {ordered.map((post) => (
-          <Link key={post.id} href={`/posts/${post.id}`} className={cn("relative aspect-square bg-[#F1EBDD]", typeAccent(post.postType))}>
+          <Link key={post.id} href={`/posts/${post.id}`} className={cn("relative aspect-square overflow-hidden rounded-lg bg-slate-100", typeAccent(post.postType))}>
             {post.thumb ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={post.thumb} alt={post.title} className="h-full w-full object-cover" />
             ) : (
               <div className="flex h-full items-end p-2">
-                <span className="font-display text-sm leading-none md:text-xl">{post.title}</span>
+                <span className="text-sm font-medium leading-tight">{post.title}</span>
               </div>
             )}
           </Link>

@@ -32,18 +32,18 @@ export default async function SettingsPage({
     <div>
       <PageHeader
         kicker="@preachthegospel.store"
-        title="Instagram"
+        title="Settings"
         lede="Facebook Login connects the professional account. A Vercel Cron job publishes approved, scheduled posts when their Central time arrives."
       />
 
       {error && (
-        <div className="mb-4 border border-[#E01F26] bg-[#F7F3EA] p-4 text-sm">
+        <div className="mb-4 rounded-2xl border border-[#E01F26]/40 bg-red-50 p-4 text-sm">
           {error}
           {params.detail ? ` ${params.detail}` : ""}
         </div>
       )}
       {params.connected && (
-        <div className="mb-4 border border-[#0A0A0A] bg-[#F7F3EA] p-4 text-sm">
+        <div className="mb-4 rounded-2xl border border-slate-200 bg-white shadow-sm p-4 text-sm">
           Instagram is connected.
           {params.warning === "username"
             ? ` The account is not @${instagramUsername()}. Confirm this is the right Page before you schedule.`
@@ -52,13 +52,13 @@ export default async function SettingsPage({
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="border border-[#0A0A0A] bg-[#F7F3EA] p-5">
-          <h2 className="font-display text-4xl">Connection</h2>
+        <section className="rounded-2xl border border-slate-200 bg-white shadow-sm p-5">
+          <h2 className="text-xl font-semibold tracking-tight">Connection</h2>
           {account ? (
             <div className="mt-3 space-y-2 text-sm">
               <p>Signed in as <strong>@{account.username}</strong></p>
               <p>Facebook Page: {account.pageName || account.pageId}</p>
-              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#767778]">
+              <p className="text-xs text-slate-400">
                 Instagram user {account.igUserId}
               </p>
             </div>
@@ -77,8 +77,8 @@ export default async function SettingsPage({
               )}
             </div>
           )}
-          <div className="mt-6 border-t border-[#0A0A0A]/20 pt-4">
-            <h3 className="font-mono text-[10px] uppercase tracking-[0.16em]">Run the publisher now</h3>
+          <div className="mt-6 border-t border-slate-200/20 pt-4">
+            <h3 className="text-xs font-medium">Run the publisher now</h3>
             <p className="mt-2 text-sm">
               Same gate as the cron: status must be Scheduled, an owner or admin must have approved it, and the Central time must have passed.
               {process.env.INSTAGRAM_PUBLISH_MODE === "dry-run" ? " Dry-run is on, so this will not call Meta." : ""}
@@ -91,10 +91,10 @@ export default async function SettingsPage({
           </div>
         </section>
 
-        <section className="border border-[#0A0A0A] bg-[#0A0A0A] p-5 text-[#F1EBDD]">
-          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#E01F26]">Needs a Meta app</div>
-          <h2 className="mt-2 font-display text-4xl text-[#F1EBDD]">Setup still on you</h2>
-          <ol className="mt-4 list-decimal space-y-2 pl-4 text-sm leading-relaxed text-[#F1EBDD]">
+        <section className="rounded-2xl bg-[#0e2340] p-5 text-white">
+          <div className="text-xs font-medium text-[#E01F26]">Needs a Meta app</div>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight text-white">Setup still on you</h2>
+          <ol className="mt-4 list-decimal space-y-2 pl-4 text-sm leading-relaxed text-white">
             <li>Create a Business app at developers.facebook.com and add Facebook Login plus Instagram.</li>
             <li>Set the OAuth redirect to your AUTH_URL plus /api/instagram/callback.</li>
             <li>Put the app id and secret in META_APP_ID and META_APP_SECRET. {metaConfigured() ? "Those are set." : "They are empty right now."}</li>
@@ -102,7 +102,7 @@ export default async function SettingsPage({
             <li>In Development mode, add that Facebook user as an app admin or tester. Live mode needs App Review for the publish and insights permissions.</li>
             <li>Uploads that Instagram fetches must be public https JPEGs or MP4s. Set BLOB_READ_WRITE_TOKEN.</li>
           </ol>
-          <p className="mt-4 text-xs text-[#C5B69B]">The exact click-path is in the README under Meta app setup.</p>
+          <p className="mt-4 text-xs text-slate-300">The exact click-path is in the README under Meta app setup.</p>
         </section>
       </div>
     </div>
