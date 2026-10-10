@@ -142,7 +142,7 @@ This is the part that does **not** work until you create a Meta app. The desk, c
    - `business_management`
 6. In the Instagram professional dashboard, switch `@preachthegospel.store` to a **Business or Creator** account and link it to a Facebook Page you admin.
 7. While the Meta app is in **Development** mode, only people listed as admin, developer, or tester can complete Facebook Login. Add the Facebook user that admins the Page.
-8. Redeploy or restart so the env vars load. In the desk, **Instagram → Connect Instagram**. The callback stores the Page token encrypted with `AUTH_SECRET`.
+8. Redeploy or restart so the env vars load. In the desk, open **Settings** and choose **Connect Instagram**. The callback stores the Page token encrypted with `AUTH_SECRET`.
 9. Put a JPEG (or PNG, which is converted if Blob is configured) on an approved post, set a time a few minutes ahead, **Approve and schedule**. When the time passes, the cron publishes it. **Publish due posts** runs the same function immediately.
 10. **Insights** reads followers plus recent media likes, comments, reach, saves, shares, and views. Reach and saves need `instagram_manage_insights`. If a metric is rejected, the row still shows likes and comments.
 
