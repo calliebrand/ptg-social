@@ -11,6 +11,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "PTG Social",
   description: "Schedule, approve, and publish Preach the Gospel on Instagram.",
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
