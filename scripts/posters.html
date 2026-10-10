@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Bodoni+Moda:opsz,wght@6..96,900&family=Old+Standard+TT:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Space+Mono:wght@400;700&family=UnifrakturMaguntia&family=Yellowtail&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #111; }
+  .poster { width: 1080px; height: 1350px; position: relative; overflow: hidden; }
+  .grain { position: absolute; inset: 0; pointer-events: none; opacity: 0.22; mix-blend-mode: multiply; }
+  .frame { position: absolute; display: flex; flex-direction: column; }
+  .top { display: flex; justify-content: space-between; font-family: "Space Mono", monospace; font-size: 18px; letter-spacing: 0.18em; }
+  .footer { margin-top: auto; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 12px; font-family: "Space Mono", monospace; font-size: 16px; letter-spacing: 0.12em; padding-top: 18px; }
+  .footer .mid { font-family: Anton, sans-serif; font-size: 20px; letter-spacing: 0.04em; transform: rotate(180deg); text-align: center; }
+  .footer .right { text-align: right; }
+  .ref { text-align: center; font-family: "Space Mono", monospace; letter-spacing: 0.22em; font-size: 18px; margin-top: 18px; }
+  .rule { width: 84px; height: 6px; background: #E01F26; margin: 18px auto 0; }
+
+  #q1 { background: #F1EBDD; color: #0A0A0A; }
+  #q1 .frame { inset: 42px; border: 3px solid #0A0A0A; padding: 28px 40px 24px; }
+  #q1 .stack { margin-top: 36px; text-align: center; font-family: "Bodoni Moda", serif; font-weight: 900; font-size: 132px; line-height: 0.78; letter-spacing: -0.045em; text-transform: uppercase; transform: scaleX(0.70); }
+  #q1 .script { text-align: center; font-family: Yellowtail, cursive; color: #E01F26; font-size: 108px; line-height: 0.7; transform: rotate(-8deg); margin: -8px 0 -18px 40px; }
+  #q1 .anton { text-align: center; font-family: Anton, sans-serif; font-size: 64px; letter-spacing: 0.02em; margin-top: 10px; }
+  #q1 .grain { opacity: 0.16; }
+
+  #q2 { background: #E9DFC9; color: #0A0A0A; }
+  #q2 .frame { inset: 42px; border: 3px solid #0A0A0A; padding: 28px 42px 24px; }
+  .heart { width: 360px; margin: 28px auto 10px; align-self: center; display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px; }
+  .heart i { display: block; width: 100%; aspect-ratio: 1; background: transparent; }
+  .heart i.on { background: #E01F26; }
+  #q2 .serif { text-align: center; font-family: "Playfair Display", serif; font-style: italic; font-weight: 700; font-size: 40px; margin-top: 18px; }
+  #q2 .script { text-align: center; font-family: Yellowtail, cursive; color: #E01F26; font-size: 92px; line-height: 0.9; margin-top: 6px; }
+  #q2 .anton { text-align: center; font-family: Anton, sans-serif; font-size: 92px; line-height: 0.9; letter-spacing: -0.01em; margin-top: 4px; }
+
+  #q3 { background: radial-gradient(circle at 50% 42%, #3a3a3a 0%, #141414 42%, #0A0A0A 100%); color: #F1EBDD; }
+  #q3 .frame { inset: 42px; border: 3px solid #F1EBDD; padding: 28px 36px 24px; }
+  #q3 .top, #q3 .ref, #q3 .footer { color: #E7E0D2; }
+  #q3 .black { text-align: center; font-family: UnifrakturMaguntia, serif; font-size: 150px; line-height: 0.9; color: #F4EFE4; text-shadow: 7px 7px 0 #E01F26; margin-top: 54px; }
+  #q3 .come { text-align: center; letter-spacing: 0.42em; font-family: "Space Mono", monospace; font-size: 18px; color: #C5B69B; margin-top: 18px; }
+  #q3 .quote { text-align: center; font-family: "Bebas Neue", sans-serif; font-size: 92px; line-height: 0.9; letter-spacing: 0.02em; margin-top: 70px; }
+  #q3 .amen { text-align: center; font-family: "Bebas Neue", sans-serif; font-size: 64px; color: #E01F26; letter-spacing: 0.03em; margin-top: 18px; }
+  #q3 .grain { mix-blend-mode: screen; opacity: 0.18; }
+
+  #q4 { background: #5E9073; color: #F1EBDD; }
+  #q4 .pinstripe { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(241,235,221,0.16) 0 2px, transparent 2px 18px); }
+  #q4 .collar { position: absolute; top: 0; left: 0; right: 0; height: 54px; background: #0A0A0A; }
+  #q4 .frame { inset: 42px; border: 3px solid #F1EBDD; padding: 36px 28px 24px; }
+  #q4 .top, #q4 .ref, #q4 .footer { color: #F1EBDD; }
+  #q4 .stack { margin-top: 28px; text-align: center; font-family: "Old Standard TT", serif; font-weight: 700; font-size: 92px; line-height: 0.92; letter-spacing: -0.02em; }
+  #q4 .grain { opacity: 0.12; mix-blend-mode: multiply; }
+
+  #q5 { background: #F1EBDD; color: #0A0A0A; }
+  #q5 .frame { inset: 42px; border: 3px solid #0A0A0A; padding: 28px 36px 24px; }
+  #q5 .local-wrap { position: relative; margin-top: 10px; height: 250px; }
+  #q5 .local { font-family: Anton, sans-serif; font-size: 250px; line-height: 0.8; letter-spacing: -0.02em; text-align: center; }
+  #q5 .servant { position: absolute; left: 18%; top: 118px; font-family: Yellowtail, cursive; color: #E01F26; font-size: 132px; transform: rotate(-8deg); }
+  #q5 .verse { margin-top: 36px; text-align: center; font-family: "Playfair Display", serif; font-weight: 700; font-size: 40px; line-height: 1.25; }
+  #q5 .verse em { color: #E01F26; font-style: italic; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="noise">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/>
+  </filter>
+</svg>
+
+<section class="poster" id="q1">
+  <div class="frame">
+    <div class="top"><span>NO. 01</span><span>THE GREAT COMMISSION</span></div>
+    <div class="stack">Go into all<br/>the world</div>
+    <div class="script">and preach</div>
+    <div class="stack">the gospel</div>
+    <div class="anton">TO EVERY CREATURE.</div>
+    <div class="rule"></div>
+    <div class="ref">MARK 16:15 · BSB</div>
+    <div class="footer"><span>EST. HOUSTON TX</span><span class="mid">PREACH THE GOSPEL.</span><span class="right">PREACHTHEGOSPEL.STORE</span></div>
+  </div>
+  <div class="grain" style="filter:url(#noise)"></div>
+</section>
+
+<section class="poster" id="q2">
+  <div class="frame">
+    <div class="top"><span>NO. 02</span><span>TAKE HEART</span></div>
+    <div class="heart" id="heart"></div>
+    <div class="serif">In the world you will have tribulation.</div>
+    <div class="script">But take courage;</div>
+    <div class="anton">I HAVE OVERCOME<br/>THE WORLD!</div>
+    <div class="ref">JOHN 16:33 · BSB</div>
+    <div class="footer"><span>EST. HOUSTON TX</span><span class="mid">PREACH THE GOSPEL.</span><span class="right">PREACHTHEGOSPEL.STORE</span></div>
+  </div>
+  <div class="grain" style="filter:url(#noise)"></div>
+</section>
+
+<section class="poster" id="q3">
+  <div class="frame">
+    <div class="top"><span>NO. 03</span><span>COME QUICKLY</span></div>
+    <div class="black">Maranatha</div>
+    <div class="come">COME, LORD</div>
+    <div class="quote">“YES, I AM<br/>COMING SOON.”</div>
+    <div class="amen">AMEN. COME, LORD JESUS!</div>
+    <div class="ref">REVELATION 22:20 · BSB</div>
+    <div class="footer"><span>EST. HOUSTON TX</span><span class="mid">PREACH THE GOSPEL.</span><span class="right">PREACHTHEGOSPEL.STORE</span></div>
+  </div>
+  <div class="grain" style="filter:url(#noise)"></div>
+</section>
+
+<section class="poster" id="q4">
+  <div class="collar"></div>
+  <div class="pinstripe"></div>
+  <div class="frame">
+    <div class="top"><span>NO. 04</span><span>UNTIL ALL HAVE HEARD</span></div>
+    <div class="stack">AND HOW<br/>CAN THEY<br/>HEAR<br/>WITHOUT<br/>SOMEONE<br/>TO PREACH?</div>
+    <div class="ref">ROMANS 10:14 · BSB</div>
+    <div class="footer"><span>EST. HOUSTON TX</span><span class="mid">PREACH THE GOSPEL.</span><span class="right">PREACHTHEGOSPEL.STORE</span></div>
+  </div>
+  <div class="grain" style="filter:url(#noise)"></div>
+</section>
+
+<section class="poster" id="q5">
+  <div class="frame">
+    <div class="top"><span>NO. 05</span><span>LOCAL SERVANT</span></div>
+    <div class="local-wrap">
+      <div class="local">LOCAL</div>
+      <div class="servant">servant</div>
+    </div>
+    <div class="verse">
+      For even the Son of Man did<br/>
+      not come <em>to be served, but</em><br/>
+      <em>to serve,</em> and to give His life<br/>
+      as a ransom for many.
+    </div>
+    <div class="ref">MARK 10:45 · BSB</div>
+    <div class="footer"><span>EST. HOUSTON TX</span><span class="mid">PREACH THE GOSPEL.</span><span class="right">PREACHTHEGOSPEL.STORE</span></div>
+  </div>
+  <div class="grain" style="filter:url(#noise)"></div>
+</section>
+
+<script>
+  const rows = [
+    "..####..####.",
+    ".############",
+    "#############",
+    "#############",
+    "#############",
+    ".###########.",
+    "..#########..",
+    "...#######...",
+    "....#####....",
+    ".....###.....",
+    "......#......",
+  ];
+  const heart = document.getElementById("heart");
+  heart.style.gridTemplateColumns = "repeat(13, 1fr)";
+  for (const row of rows) {
+    for (const cell of row.padEnd(13, ".")) {
+      const i = document.createElement("i");
+      if (cell === "#") i.className = "on";
+      heart.appendChild(i);
+    }
+  }
+</script>
+</body>
+</html>

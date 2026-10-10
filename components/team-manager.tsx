@@ -1,0 +1,115 @@
+"use client";
+
+import { useActionState, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { createUser, deleteUser, resetUserPassword, updateUserRole } from "@/app/actions/team";
+import { Button } from "@/components/ui/button";
+import { Input, fieldClass } from "@/components/ui/input";
+import type { Role } from "@prisma/client";
+import { canAssignRole, type AppRole } from "@/lib/permissions";
+
+type Person = { id: string; name: string; email: string; role: Role };
+
+export function TeamManager({ people, actorRole, actorId }: { people: Person[]; actorRole: AppRole; actorId: string }) {
+  const [state, action, pending] = useActionState(createUser, null);
+  const router = useRouter();
+  const [reset, setReset] = useState<{ email: string; tempPassword: string } | null>(null);
+  const roles: Role[] = ["OWNER", "ADMIN", "EDITOR", "VIEWER"];
+
+  return (
+    <div className="space-y-6">
+      <form action={action} className="grid gap-3 border border-[#0A0A0A] bg-[#F7F3EA] p-4 md:grid-cols-4">
+        <Input name="name" placeholder="Name" required />
+        <Input name="email" type="email" placeholder="Email" required />
+        <select name="role" defaultValue="EDITOR" className={fieldClass}>
+          {roles.filter((role) => canAssignRole(actorRole, role)).map((role) => (
+            <option key={role} value={role}>{role.toLowerCase()}</option>
+          ))}
+        </select>
+        <Button type="submit" disabled={pending}>Add person</Button>
+        {state?.error && <p className="md:col-span-4 text-sm text-[#E01F26]">{state.error}</p>}
+        {state?.tempPassword && (
+          <p className="md:col-span-4 border border-[#0A0A0A] bg-white p-3 text-sm">
+            {state.email} can sign in with temporary password <span className="font-mono">{state.tempPassword}</span>. It is shown once.
+          </p>
+        )}
+      </form>
+
+      {reset && (
+        <p className="border border-[#0A0A0A] bg-white p-3 text-sm">
+          New password for {reset.email}: <span className="font-mono">{reset.tempPassword}</span>
+        </p>
+      )}
+
+      <div className="overflow-x-auto border border-[#0A0A0A] bg-[#F7F3EA]">
+        <table className="w-full min-w-[680px] text-left text-sm">
+          <thead className="border-b border-[#0A0A0A] font-mono text-[10px] uppercase tracking-[0.14em]">
+            <tr>
+              <th className="px-3 py-2">Name</th>
+              <th className="px-3 py-2">Email</th>
+              <th className="px-3 py-2">Role</th>
+              <th className="px-3 py-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {people.map((person) => (
+              <tr key={person.id} className="border-b border-[#0A0A0A]/10">
+                <td className="px-3 py-3">{person.name}{person.id === actorId ? " (you)" : ""}</td>
+                <td className="px-3 py-3">{person.email}</td>
+                <td className="px-3 py-3">
+                  <select
+                    className={fieldClass}
+                    defaultValue={person.role}
+                    disabled={!canAssignRole(actorRole, person.role)}
+                    onChange={async (event) => {
+                      const result = await updateUserRole(person.id, event.target.value as Role);
+                      if (result && "error" in result && result.error) toast.error(result.error);
+                      else toast.success("Role saved.");
+                      router.refresh();
+                    }}
+                  >
+                    {roles.map((role) => (
+                      <option key={role} value={role} disabled={!canAssignRole(actorRole, role)}>
+                        {role.toLowerCase()}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className="px-3 py-3">
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      className="font-mono text-[10px] uppercase tracking-[0.14em] underline"
+                      onClick={async () => {
+                        const result = await resetUserPassword(person.id);
+                        if (result.error || !result.tempPassword) toast.error(result.error || "Could not reset.");
+                        else setReset({ email: result.email || person.email, tempPassword: result.tempPassword });
+                      }}
+                    >
+                      Reset password
+                    </button>
+                    {person.id !== actorId && (
+                      <button
+                        type="button"
+                        className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#E01F26]"
+                        onClick={async () => {
+                          if (!confirm(`Remove ${person.name}?`)) return;
+                          const result = await deleteUser(person.id);
+                          if (result.error) toast.error(result.error);
+                          else router.refresh();
+                        }}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}

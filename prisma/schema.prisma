@@ -1,0 +1,194 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum PostType {
+  QUOTE_CARD
+  REEL
+  CAROUSEL
+  PHOTO
+  ENGAGEMENT
+}
+
+enum PostStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  SCHEDULED
+  PUBLISHED
+  FAILED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(EDITOR)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  posts        Post[]             @relation("PostAuthor")
+  approvals    Post[]             @relation("PostApprover")
+  comments     Comment[]
+  assets       Asset[]
+  activities   Activity[]
+  templates    CaptionTemplate[]
+  hashtagSets  HashtagSet[]
+  connections  InstagramAccount[]
+}
+
+model Post {
+  id               String     @id @default(cuid())
+  planNumber       Int?       @unique
+  title            String
+  caption          String     @default("")
+  hashtags         String     @default("")
+  postType         PostType
+  status           PostStatus @default(DRAFT)
+  scheduledAt      DateTime?
+  timezone         String     @default("America/Chicago")
+  notes            String     @default("")
+  bibleReference   String     @default("")
+  quoteText        String     @default("")
+  pillar           String     @default("")
+  productTie       String     @default("")
+  visualDirection  String     @default("")
+  palette          String     @default("")
+  productionNotes  String     @default("")
+  cta              String     @default("")
+  assetStatus      String     @default("")
+  approvedById     String?
+  approvedAt       DateTime?
+  igMediaId        String?
+  igPermalink      String?
+  publishError     String?
+  publishAttempts  Int        @default(0)
+  publishedAt      DateTime?
+  createdById      String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  createdBy  User?       @relation("PostAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+  approvedBy User?       @relation("PostApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  media      PostAsset[]
+  slides     Slide[]
+  comments   Comment[]
+
+  @@index([scheduledAt])
+  @@index([status])
+}
+
+model Slide {
+  id       String @id @default(cuid())
+  postId   String
+  position Int
+  heading  String @default("")
+  body     String @default("")
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+}
+
+model Asset {
+  id          String      @id @default(cuid())
+  filename    String
+  mimeType    String
+  size        Int
+  url         String
+  pathname    String      @unique
+  storage     String      @default("local")
+  width       Int?
+  height      Int?
+  alt         String      @default("")
+  createdById String?
+  createdAt   DateTime    @default(now())
+  createdBy   User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  posts       PostAsset[]
+}
+
+model PostAsset {
+  id       String @id @default(cuid())
+  postId   String
+  assetId  String
+  position Int    @default(0)
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  asset    Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, assetId])
+  @@index([postId])
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  postId     String
+  userId     String?
+  authorName String
+  authorRole String
+  body       String
+  createdAt  DateTime @default(now())
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([postId])
+}
+
+model CaptionTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  body        String
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+}
+
+model HashtagSet {
+  id          String   @id @default(cuid())
+  name        String
+  tags        String
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+}
+
+model Activity {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  entityType String
+  entityId   String?
+  detail     String   @default("")
+  createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+}
+
+model InstagramAccount {
+  id             String    @id @default(cuid())
+  igUserId       String
+  username       String
+  pageId         String
+  pageName       String    @default("")
+  accessTokenEnc String
+  tokenExpiresAt DateTime?
+  connectedById  String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  connectedBy    User?     @relation(fields: [connectedById], references: [id], onDelete: SetNull)
+}
