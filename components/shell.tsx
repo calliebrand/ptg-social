@@ -22,6 +22,7 @@ import {
   Users,
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
+import { BrandLogo } from "@/components/brand-logo";
 import { CommandPalette, type PaletteCommand } from "@/components/command-palette";
 import { Kbd } from "@/components/ui/button";
 import { canEdit } from "@/lib/permissions";
@@ -144,10 +145,9 @@ export function Shell({
 
   const nav = (
     <div className="flex h-full flex-col">
-      <div className={cn("mb-6 flex items-center gap-2 px-1", collapsed && "flex-col")}>
-        <Link href="/" onClick={() => setOpen(false)} className="flex min-w-0 flex-1 items-center gap-2.5">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-ink text-sm font-semibold text-white">P</span>
-          {!collapsed && <span className="truncate text-[15px] font-semibold tracking-[-0.02em] text-ink">Preach</span>}
+      <div className={cn("mb-6 flex items-center gap-2 px-1", collapsed && "flex-col px-0")}>
+        <Link href="/" onClick={() => setOpen(false)} aria-label="Preach the Gospel" className={cn("flex min-w-0 items-center", collapsed ? "w-10 justify-center" : "flex-1")}>
+          <BrandLogo compact={collapsed} />
         </Link>
         <button
           type="button"
