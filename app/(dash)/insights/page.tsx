@@ -25,7 +25,7 @@ export default async function InsightsPage() {
       )}
       {data && !data.connected && (
         <div className="border border-line bg-paper p-6">
-          <h2 className="font-display text-3xl leading-none">Not connected</h2>
+          <h2 className="text-[15px] font-medium tracking-[-0.02em]">Not connected</h2>
           <p className="mt-2 max-w-xl text-sm">
             {metaConfigured()
               ? "Meta app credentials are present. Connect @preachthegospel.store from Instagram settings."
@@ -89,7 +89,7 @@ function Metric({ label, value }: { label: string; value: number | null }) {
   return (
     <div className="border border-line bg-paper p-4">
       <div className="text-xs font-medium text-mute">{label}</div>
-      <div className="font-display text-4xl leading-none">{value ?? "—"}</div>
+      <div className="text-[28px] font-medium leading-none tracking-[-0.04em]">{value ?? "—"}</div>
     </div>
   );
 }

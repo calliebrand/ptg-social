@@ -24,7 +24,7 @@ export default async function TemplatesPage() {
       />
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="space-y-4">
-          <h2 className="font-display text-3xl leading-none">Captions</h2>
+          <h2 className="text-[15px] font-medium tracking-[-0.02em]">Captions</h2>
           {editable && (
             <form action={createCaptionTemplate} className="space-y-2 border border-line bg-paper p-4">
               <Input name="name" placeholder="Name" required />
@@ -34,7 +34,7 @@ export default async function TemplatesPage() {
           )}
           {templates.map((template) => (
             <article key={template.id} className="border border-line bg-paper p-4">
-              <h3 className="font-display text-2xl leading-none">{template.name}</h3>
+              <h3 className="text-[15px] font-medium tracking-[-0.02em]">{template.name}</h3>
               <p className="mt-2 whitespace-pre-wrap text-sm">{template.body}</p>
               {editable && (
                 <form action={deleteCaptionTemplate} className="mt-3">
@@ -46,7 +46,7 @@ export default async function TemplatesPage() {
           ))}
         </section>
         <section className="space-y-4">
-          <h2 className="font-display text-3xl leading-none">Hashtag sets</h2>
+          <h2 className="text-[15px] font-medium tracking-[-0.02em]">Hashtag sets</h2>
           {editable && (
             <form action={createHashtagSet} className="space-y-2 border border-line bg-paper p-4">
               <Input name="name" placeholder="Name" required />
@@ -56,7 +56,7 @@ export default async function TemplatesPage() {
           )}
           {sets.map((set) => (
             <article key={set.id} className="border border-line bg-paper p-4">
-              <h3 className="font-display text-2xl leading-none">{set.name}</h3>
+              <h3 className="text-[15px] font-medium tracking-[-0.02em]">{set.name}</h3>
               <p className="mt-2 font-mono text-xs">{set.tags}</p>
               {editable && (
                 <form action={deleteHashtagSet} className="mt-3">

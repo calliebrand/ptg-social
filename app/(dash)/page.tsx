@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { chicagoStamp } from "@/lib/time";
 import { postTypeLabel, statusLabel } from "@/lib/posts";
-import { Button } from "@/components/ui/button";
+import { Button, Kbd } from "@/components/ui/button";
 
 export default async function DeskPage() {
   const [counts, upcoming, gaps, activity, connection, due] = await Promise.all([
@@ -40,7 +40,10 @@ export default async function DeskPage() {
         lede="Thirty days of scripture, product, and Houston. Nothing publishes until an owner or admin approves it."
         actions={
           <Button asChild>
-            <Link href="/posts/new">Create Post</Link>
+            <Link href="/posts/new">
+              Create Post
+              <Kbd>C</Kbd>
+            </Link>
           </Button>
         }
       />
@@ -59,7 +62,7 @@ export default async function DeskPage() {
       <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_0.8fr]">
         <section className="border border-line bg-paper">
           <div className="flex items-center justify-between border-b border-line px-4 py-3">
-            <h2 className="font-display text-2xl leading-none">Coming up</h2>
+            <h2 className="text-[15px] font-medium tracking-[-0.02em]">Coming up</h2>
             <Link href="/calendar" className="text-xs font-medium underline">
               Calendar
             </Link>
@@ -87,7 +90,7 @@ export default async function DeskPage() {
 
         <div className="space-y-4">
           <section className="border border-line bg-paper p-4">
-            <h2 className="font-display text-2xl leading-none">Instagram</h2>
+            <h2 className="text-[15px] font-medium tracking-[-0.02em]">Instagram</h2>
             <p className="mt-2 text-sm">
               {connection ? (
                 <>Connected as @{connection.username}. {due} approved post{due === 1 ? "" : "s"} waiting on the clock.</>
@@ -100,7 +103,7 @@ export default async function DeskPage() {
             </Link>
           </section>
           <section className="border border-line bg-paper p-4">
-            <h2 className="font-display text-2xl leading-none">Needs a file</h2>
+            <h2 className="text-[15px] font-medium tracking-[-0.02em]">Needs a file</h2>
             <ul className="mt-3 space-y-2">
               {gaps.map((post) => (
                 <li key={post.id}>
@@ -116,7 +119,7 @@ export default async function DeskPage() {
             </ul>
           </section>
           <section className="border border-line bg-paper p-4">
-            <h2 className="font-display text-2xl leading-none">Activity</h2>
+            <h2 className="text-[15px] font-medium tracking-[-0.02em]">Activity</h2>
             <ul className="mt-3 space-y-2">
               {activity.map((item) => (
                 <li key={item.id} className="text-sm">
@@ -139,7 +142,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="border border-line bg-paper px-3 py-3">
       <div className="text-xs font-medium text-mute">{label}</div>
-      <div className="font-display text-4xl leading-none">{value}</div>
+      <div className="text-[28px] font-medium leading-none tracking-[-0.04em]">{value}</div>
     </div>
   );
 }

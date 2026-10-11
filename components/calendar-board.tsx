@@ -6,7 +6,8 @@ import { DndContext, DragOverlay, PointerSensor, useDraggable, useDroppable, use
 import { InstagramMark } from "@/components/instagram-mark";
 import Link from "next/link";
 import { reschedulePost } from "@/app/actions/posts";
-import { StatusBadge, typeTint } from "@/components/status-badge";
+import { StatusBadge, statusDot, typeTint } from "@/components/status-badge";
+import { statusLabel } from "@/lib/posts";
 import { dayNumber, inMonth, weekdayLabels } from "@/lib/time";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -62,12 +63,12 @@ function Chip({ post, overlay = false, compact = false }: { post: CalPost; overl
       {...dragRest}
       data-post-id={post.id}
       className={cn(
-        "flex overflow-hidden",
+        "event-card flex overflow-hidden bg-paper",
         typeTint(post.postType, post.status),
-        isDragging && "opacity-40",
+        isDragging && "scale-[1.02] opacity-90",
         overlay && "w-52",
         post.status !== "PUBLISHED" && "cursor-grab active:cursor-grabbing",
-        compact ? "h-[62px]" : "min-h-[52px]",
+        compact ? "h-[58px]" : "min-h-[48px]",
       )}
       onPointerDown={(event) => {
         origin.current = { x: event.clientX, y: event.clientY };
@@ -89,9 +90,9 @@ function Chip({ post, overlay = false, compact = false }: { post: CalPost; overl
         </span>
       )}
       <div className="min-w-0 flex-1 px-1.5 py-1">
-        <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center gap-1">
+          <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", statusDot(post.status))} title={statusLabel(post.status)} />
           <span className="font-mono text-[10px] tabular-nums text-mute">{post.timeLabel}</span>
-          <StatusBadge status={post.status} className="max-w-16 truncate px-1 py-0 text-[8px] leading-tight" />
         </div>
         <div className="mt-0.5 line-clamp-2 text-[11px] leading-tight">{post.title}</div>
       </div>
@@ -133,10 +134,12 @@ function WeekColumn({
   date,
   posts,
   today,
+  nowMinutes,
 }: {
   date: string;
   posts: CalPost[];
   today: string;
+  nowMinutes: number | null;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: `day:${date}` });
   const height = (END_HOUR - START_HOUR) * ROW;
@@ -144,12 +147,22 @@ function WeekColumn({
     <div
       ref={setNodeRef}
       data-date={date}
-      className={cn("relative border-r border-line", isOver && "bg-ptg/10", date === today && "bg-ptg/[0.04]")}
+      className={cn("relative border-r border-line", isOver && "bg-ptg/10", date === today && "bg-[#f6ebe3]")}
       style={{ height }}
     >
       {Array.from({ length: END_HOUR - START_HOUR }, (_, index) => (
         <div key={index} className="border-b border-line/80" style={{ height: ROW }} />
       ))}
+      {date === today && nowMinutes !== null && nowMinutes >= START_HOUR * 60 && nowMinutes <= END_HOUR * 60 && (
+        <div
+          className="pointer-events-none absolute right-0 left-0 z-20"
+          style={{ top: ((nowMinutes - START_HOUR * 60) / 60) * ROW }}
+        >
+          <div className="relative h-px bg-ptg">
+            <span className="absolute -top-[3px] -left-[3px] h-1.5 w-1.5 rounded-full bg-ptg" />
+          </div>
+        </div>
+      )}
       {posts.map((post, index) => {
         const minutes = clockMinutes(post.timeLabel);
         const clamped = Math.min(Math.max(minutes, START_HOUR * 60), END_HOUR * 60 - 20);
@@ -174,6 +187,7 @@ export function CalendarBoard({
   dimOutside = true,
   mode = "month",
   today,
+  nowMinutes = null,
 }: {
   days: string[];
   posts: CalPost[];
@@ -184,6 +198,7 @@ export function CalendarBoard({
   dimOutside?: boolean;
   mode?: "month" | "week";
   today: string;
+  nowMinutes?: number | null;
 }) {
   const router = useRouter();
   const [active, setActive] = useState<CalPost | null>(null);
@@ -242,8 +257,8 @@ export function CalendarBoard({
                       <div className="text-[10px] uppercase tracking-[0.12em] text-mute">{weekdayLabels()[index]}</div>
                       <div
                         className={cn(
-                          "mx-auto mt-1 grid h-7 w-7 place-items-center font-display text-lg leading-none",
-                          date === today ? "bg-ptg text-white" : "text-ink",
+                          "mx-auto mt-1 text-[15px] font-medium leading-none tracking-[-0.03em]",
+                          date === today ? "text-ptg" : "text-ink",
                         )}
                       >
                         {dayNumber(date)}
@@ -261,7 +276,7 @@ export function CalendarBoard({
                     ))}
                   </div>
                   {days.map((date) => (
-                    <WeekColumn key={date} date={date} posts={byDay.get(date) ?? []} today={today} />
+                    <WeekColumn key={date} date={date} posts={byDay.get(date) ?? []} today={today} nowMinutes={nowMinutes} />
                   ))}
                 </div>
               </div>
@@ -310,7 +325,7 @@ function ScheduledPanel({
   return (
     <aside className="border border-line bg-paper p-3">
       <div className="flex items-center justify-between border-b border-line px-1 pb-2">
-        <h2 className="font-display text-2xl leading-none">Scheduled Posts</h2>
+        <h2 className="text-[15px] font-medium tracking-[-0.02em]">Scheduled Posts</h2>
         <span className="font-mono text-xs tabular-nums text-mute">{posts.length}</span>
       </div>
       <ul className="mt-1 max-h-[640px] overflow-y-auto">

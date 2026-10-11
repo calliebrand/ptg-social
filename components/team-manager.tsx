@@ -44,7 +44,7 @@ export function TeamManager({ people, actorRole, actorId }: { people: Person[]; 
 
       <div className="overflow-x-auto border border-line bg-paper">
         <table className="w-full min-w-[680px] text-left text-sm">
-          <thead className="border-b border-line text-xs font-medium">
+          <thead className="micro border-b border-line text-mute">
             <tr>
               <th className="px-3 py-2">Name</th>
               <th className="px-3 py-2">Email</th>
@@ -55,7 +55,12 @@ export function TeamManager({ people, actorRole, actorId }: { people: Person[]; 
           <tbody>
             {people.map((person) => (
               <tr key={person.id} className="border-b border-line">
-                <td className="px-3 py-3">{person.name}{person.id === actorId ? " (you)" : ""}</td>
+                <td className="px-3 py-2">
+                  <span className="flex items-center gap-2">
+                    <span className="grid h-5 w-5 place-items-center bg-ink text-[10px] text-cream">{person.name.slice(0, 1).toUpperCase()}</span>
+                    {person.name}{person.id === actorId ? " (you)" : ""}
+                  </span>
+                </td>
                 <td className="px-3 py-3">{person.email}</td>
                 <td className="px-3 py-3">
                   <select

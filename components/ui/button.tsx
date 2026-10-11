@@ -3,26 +3,28 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ptg focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:pointer-events-none disabled:opacity-40",
-  {
-    variants: {
-      variant: {
-        default: "bg-ptg text-white hover:bg-[#c41920]",
-        red: "bg-ptg text-white hover:bg-[#c41920]",
-        outline: "border border-line bg-paper text-ink hover:bg-canvas",
-        ghost: "text-ink hover:bg-ink/5",
-      },
-      size: {
-        default: "h-9 px-3.5",
-        sm: "h-8 px-2.5 text-xs",
-        lg: "h-11 px-5",
-        icon: "h-9 w-9",
-      },
+const buttonVariants = cva("btn", {
+  variants: {
+    variant: {
+      default: "btn-primary",
+      red: "btn-primary",
+      outline: "btn-subtle",
+      subtle: "btn-subtle",
+      ghost: "btn-ghost",
     },
-    defaultVariants: { variant: "default", size: "default" },
+    size: {
+      default: "",
+      sm: "btn-sm",
+      lg: "btn-lg",
+      icon: "w-8 px-0",
+    },
   },
-);
+  defaultVariants: { variant: "default", size: "default" },
+});
+
+export function Kbd({ children }: { children: React.ReactNode }) {
+  return <span className="kbd">{children}</span>;
+}
 
 export function Button({
   className,

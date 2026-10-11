@@ -51,14 +51,14 @@ export function statusDot(status: string) {
     case "FAILED":
       return "bg-ptg";
     case "SCHEDULED":
-      return "bg-ink";
+      return "bg-ptg";
     case "APPROVED":
-      return "bg-[#3d6b4f]";
+      return "bg-[#2f7d4a]";
     case "IN_REVIEW":
       return "bg-[#c4a574]";
     case "PUBLISHED":
       return "bg-ink";
     default:
-      return "bg-line";
+      return "bg-[#b7aa9c]";
   }
 }

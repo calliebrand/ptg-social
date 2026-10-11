@@ -21,9 +21,12 @@ export default async function TeamPage() {
       {!canManageUsers(user.role) ? (
         <ul className="border border-line bg-paper">
           {people.map((person) => (
-            <li key={person.id} className="flex items-center justify-between border-b border-line px-4 py-3 text-sm">
-              <span>{person.name}</span>
-              <span className="text-xs font-medium">{person.role.toLowerCase()}</span>
+            <li key={person.id} className="flex items-center justify-between border-b border-line px-3 py-2 text-[13px]">
+              <span className="flex items-center gap-2">
+                <span className="grid h-5 w-5 place-items-center bg-ink text-[10px] text-cream">{person.name.slice(0, 1).toUpperCase()}</span>
+                {person.name}
+              </span>
+              <span className="micro text-mute">{person.role.toLowerCase()}</span>
             </li>
           ))}
         </ul>

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
-import { Button } from "@/components/ui/button";
+import { Button, Kbd } from "@/components/ui/button";
 import { duplicatePost } from "@/app/actions/posts";
 import { postTypeLabel, statusLabel, POST_STATUSES, POST_TYPES } from "@/lib/posts";
 import { chicagoStamp } from "@/lib/time";
@@ -40,26 +40,29 @@ export default async function PostsPage({
         actions={
           canEdit(user.role) ? (
             <Button asChild>
-              <Link href="/posts/new">Create Post</Link>
+              <Link href="/posts/new">
+                Create Post
+                <Kbd>C</Kbd>
+              </Link>
             </Button>
           ) : null
         }
       />
       <form className="mb-4 flex flex-wrap gap-2" method="get">
-        <input name="q" defaultValue={params.q || ""} placeholder="Search" className="border border-line bg-paper px-3 py-2 text-sm" />
-        <select name="status" defaultValue={status || ""} className="border border-line bg-paper px-3 py-2 text-sm">
+        <input name="q" defaultValue={params.q || ""} placeholder="Search" className="field w-auto" />
+        <select name="status" defaultValue={status || ""} className="field w-auto">
           <option value="">Any status</option>
           {POST_STATUSES.map((item) => (
             <option key={item} value={item}>{statusLabel(item)}</option>
           ))}
         </select>
-        <select name="type" defaultValue={postType || ""} className="border border-line bg-paper px-3 py-2 text-sm">
+        <select name="type" defaultValue={postType || ""} className="field w-auto">
           <option value="">Any type</option>
           {POST_TYPES.map((item) => (
             <option key={item} value={item}>{postTypeLabel(item)}</option>
           ))}
         </select>
-        <button className="rounded-sm bg-ptg px-3 py-2 text-sm font-medium text-white">Filter</button>
+        <button className="btn btn-primary">Filter</button>
       </form>
       <div className="overflow-x-auto border border-line bg-paper">
         <table className="w-full min-w-[760px] text-left text-sm">

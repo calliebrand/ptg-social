@@ -166,14 +166,14 @@ export function PostEditor({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-sidebar/55 p-0 sm:items-center sm:p-4 md:p-6">
-      <div className="flex h-[100dvh] w-full flex-col overflow-hidden border border-line bg-paper sm:h-[min(900px,calc(100dvh-2rem))] sm:max-w-6xl">
+      <div className="modal-panel flex h-[100dvh] w-full flex-col overflow-hidden border border-line bg-paper sm:h-[min(900px,calc(100dvh-2rem))] sm:max-w-6xl">
         <header className="flex items-center justify-between gap-3 border-b border-line bg-paper px-4 py-3 md:px-5">
           <div className="min-w-0">
             <div className="text-[11px] uppercase tracking-[0.14em] text-mute">
               {post?.planNumber ? `Plan no. ${String(post.planNumber).padStart(2, "0")}` : "New post"}
               {post ? ` · ${statusLabel(post.status)}` : ""}
             </div>
-            <h1 className="truncate font-display text-3xl leading-none text-ink">{form.title || "Create Post"}</h1>
+            <h1 className="truncate text-[18px] font-medium tracking-[-0.03em] text-ink">{form.title || "Create Post"}</h1>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             {post && <StatusBadge status={post.status} />}
@@ -570,7 +570,7 @@ export function PostEditor({
           ) : (
             <div className="flex aspect-[4/5] items-center justify-center bg-canvas p-6 text-center">
               <div>
-                <div className="font-display text-3xl leading-none">{form.quoteText || form.title || "Quote"}</div>
+                <div className="font-serif text-[28px] leading-none text-ink">{form.quoteText || form.title || "Quote"}</div>
                 {form.bibleReference && (
                   <div className="mt-3 text-[10px] font-medium uppercase tracking-wide text-mute">{form.bibleReference}</div>
                 )}

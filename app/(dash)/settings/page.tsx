@@ -53,7 +53,7 @@ export default async function SettingsPage({
 
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="border border-line bg-paper p-5">
-          <h2 className="font-display text-3xl leading-none">Connection</h2>
+          <h2 className="text-[15px] font-medium tracking-[-0.02em]">Connection</h2>
           {account ? (
             <div className="mt-3 space-y-2 text-sm">
               <p>Signed in as <strong>@{account.username}</strong></p>
@@ -93,7 +93,7 @@ export default async function SettingsPage({
 
         <section className="bg-sidebar p-5 text-white">
           <div className="text-xs font-medium text-[#E01F26]">Needs a Meta app</div>
-          <h2 className="mt-2 font-display text-3xl leading-none text-cream">Setup still on you</h2>
+          <h2 className="mt-2 text-[15px] font-medium tracking-[-0.02em] text-cream">Setup still on you</h2>
           <ol className="mt-4 list-decimal space-y-2 pl-4 text-sm leading-relaxed text-white">
             <li>Create a Business app at developers.facebook.com and add Facebook Login plus Instagram.</li>
             <li>Set the OAuth redirect to your AUTH_URL plus /api/instagram/callback.</li>

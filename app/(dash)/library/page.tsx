@@ -22,7 +22,7 @@ export default async function LibraryPage() {
       />
       {assets.length === 0 && (
         <div className="border border-dashed border-line bg-paper px-8 py-12">
-          <h2 className="font-display text-3xl leading-none">The library is empty</h2>
+          <h2 className="text-[18px] font-medium tracking-[-0.03em]">The library is empty</h2>
           <p className="mt-2 max-w-md text-sm text-mute">Upload a JPEG, PNG, or MP4, or run the seed to pull in the five quote cards.</p>
         </div>
       )}

@@ -5,7 +5,8 @@ import { StatusBadge, typeAccent } from "@/components/status-badge";
 import { requireUser } from "@/lib/session";
 import { canEdit } from "@/lib/permissions";
 import { POST_STATUSES, POST_TYPES, postTypeLabel, statusLabel } from "@/lib/posts";
-import { Button } from "@/components/ui/button";
+import { Button, Kbd } from "@/components/ui/button";
+import { formatInTimeZone } from "date-fns-tz";
 import {
   chicagoDateKey,
   chicagoStamp,
@@ -16,6 +17,7 @@ import {
   parseMonthParam,
   rangeForDays,
   shiftMonth,
+  TZ,
   weekDays,
 } from "@/lib/time";
 import { cn } from "@/lib/utils";
@@ -100,12 +102,13 @@ export default async function CalendarPage({
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-4xl leading-none text-ink">Content Calendar</h1>
+        <h1 className="text-[22px] font-medium leading-none tracking-[-0.035em] text-ink">Content Calendar</h1>
         {canEdit(user.role) && (
           <Button asChild>
             <Link href="/posts/new">
-              <Plus className="h-4 w-4" />
+              <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
               Create Post
+              <Kbd>C</Kbd>
             </Link>
           </Button>
         )}
@@ -124,7 +127,7 @@ export default async function CalendarPage({
             </Link>
           )}
         </div>
-        <div className="flex border border-line bg-paper p-0.5">
+        <div className="seg">
           <ViewLink current={view} view="week" month={month.key} week={anchor}>
             Week
           </ViewLink>
@@ -151,6 +154,7 @@ export default async function CalendarPage({
           dimOutside={view === "month"}
           mode={view === "week" ? "week" : "month"}
           today={chicagoToday()}
+          nowMinutes={chicagoNowMinutes()}
         />
       )}
 
@@ -164,9 +168,9 @@ export default async function CalendarPage({
               name="q"
               defaultValue={params.q || ""}
               placeholder="Search title"
-              className="border border-line bg-paper px-3 py-2 text-sm"
+              className="field w-auto"
             />
-            <select name="status" defaultValue={params.status || ""} className="border border-line bg-paper px-3 py-2 text-sm">
+            <select name="status" defaultValue={params.status || ""} className="field w-auto">
               <option value="">Any status</option>
               {["DRAFT", "IN_REVIEW", "APPROVED", "SCHEDULED", "PUBLISHED", "FAILED"].map((status) => (
                 <option key={status} value={status}>
@@ -174,7 +178,7 @@ export default async function CalendarPage({
                 </option>
               ))}
             </select>
-            <select name="type" defaultValue={params.type || ""} className="border border-line bg-paper px-3 py-2 text-sm">
+            <select name="type" defaultValue={params.type || ""} className="field w-auto">
               <option value="">Any type</option>
               {["QUOTE_CARD", "REEL", "CAROUSEL", "PHOTO", "ENGAGEMENT"].map((type) => (
                 <option key={type} value={type}>
@@ -182,7 +186,7 @@ export default async function CalendarPage({
                 </option>
               ))}
             </select>
-            <button className="rounded-sm bg-ptg px-3 py-2 text-sm font-medium text-white">
+            <button className="btn btn-primary">
               Filter
             </button>
           </form>
@@ -223,6 +227,11 @@ export default async function CalendarPage({
   );
 }
 
+function chicagoNowMinutes(now = new Date()) {
+  const [hour, minute] = formatInTimeZone(now, TZ, "HH:mm").split(":").map(Number);
+  return hour * 60 + minute;
+}
+
 function prettyDay(date: string) {
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const [, month, day] = date.split("-").map(Number);
@@ -261,8 +270,8 @@ function ViewLink({
     <Link
       href={`/calendar?view=${view}&month=${month}&week=${week}`}
       className={cn(
-        "px-3 py-1 text-sm",
-        current === view ? "bg-ink text-cream" : "text-mute hover:text-ink",
+        "seg-item",
+        current === view && "is-on",
       )}
     >
       {children}
