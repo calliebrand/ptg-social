@@ -100,7 +100,7 @@ export default async function CalendarPage({
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Content Calendar</h1>
+        <h1 className="font-display text-4xl leading-none text-ink">Content Calendar</h1>
         {canEdit(user.role) && (
           <Button asChild>
             <Link href="/posts/new">
@@ -113,18 +113,18 @@ export default async function CalendarPage({
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-1">
           {view !== "list" && (
-            <Link href={prevHref} aria-label="Previous" className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-white">
+            <Link href={prevHref} aria-label="Previous" className="grid h-8 w-8 place-items-center text-mute hover:bg-paper hover:text-ink">
               <ChevronLeft className="h-4 w-4" />
             </Link>
           )}
-          <div className="min-w-40 text-center text-sm font-semibold text-slate-800">{rangeLabel}</div>
+          <div className="min-w-44 text-center font-mono text-sm tabular-nums text-ink">{rangeLabel}</div>
           {view !== "list" && (
-            <Link href={nextHref} aria-label="Next" className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-white">
+            <Link href={nextHref} aria-label="Next" className="grid h-8 w-8 place-items-center text-mute hover:bg-paper hover:text-ink">
               <ChevronRight className="h-4 w-4" />
             </Link>
           )}
         </div>
-        <div className="flex rounded-xl bg-white p-1 shadow-sm">
+        <div className="flex border border-line bg-paper p-0.5">
           <ViewLink current={view} view="week" month={month.key} week={anchor}>
             Week
           </ViewLink>
@@ -164,9 +164,9 @@ export default async function CalendarPage({
               name="q"
               defaultValue={params.q || ""}
               placeholder="Search title"
-              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm"
+              className="border border-line bg-paper px-3 py-2 text-sm"
             />
-            <select name="status" defaultValue={params.status || ""} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm">
+            <select name="status" defaultValue={params.status || ""} className="border border-line bg-paper px-3 py-2 text-sm">
               <option value="">Any status</option>
               {["DRAFT", "IN_REVIEW", "APPROVED", "SCHEDULED", "PUBLISHED", "FAILED"].map((status) => (
                 <option key={status} value={status}>
@@ -174,7 +174,7 @@ export default async function CalendarPage({
                 </option>
               ))}
             </select>
-            <select name="type" defaultValue={params.type || ""} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm">
+            <select name="type" defaultValue={params.type || ""} className="border border-line bg-paper px-3 py-2 text-sm">
               <option value="">Any type</option>
               {["QUOTE_CARD", "REEL", "CAROUSEL", "PHOTO", "ENGAGEMENT"].map((type) => (
                 <option key={type} value={type}>
@@ -182,13 +182,13 @@ export default async function CalendarPage({
                 </option>
               ))}
             </select>
-            <button className="rounded-lg bg-[#2F6BFF] px-3 py-2 text-sm font-medium text-white">
+            <button className="rounded-sm bg-ptg px-3 py-2 text-sm font-medium text-white">
               Filter
             </button>
           </form>
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-x-auto border border-line bg-paper">
             <table className="w-full min-w-[720px] text-left text-sm">
-              <thead className="border-b border-slate-100 text-xs font-medium text-slate-400">
+              <thead className="border-b border-line text-xs font-medium text-mute">
                 <tr>
                   <th className="px-3 py-2">When</th>
                   <th className="px-3 py-2">Title</th>
@@ -198,8 +198,8 @@ export default async function CalendarPage({
               </thead>
               <tbody>
                 {allForList.map((post) => (
-                  <tr key={post.id} className="border-b border-slate-100">
-                    <td className="px-3 py-2 text-xs text-slate-500">
+                  <tr key={post.id} className="border-b border-line">
+                    <td className="px-3 py-2 text-xs text-mute">
                       {post.scheduledAt ? chicagoStamp(post.scheduledAt) : "Unscheduled"}
                     </td>
                     <td className="px-3 py-2">
@@ -261,8 +261,8 @@ function ViewLink({
     <Link
       href={`/calendar?view=${view}&month=${month}&week=${week}`}
       className={cn(
-        "rounded-lg px-3 py-1.5 text-sm font-medium",
-        current === view ? "bg-[#2F6BFF] text-white" : "text-slate-500 hover:text-slate-800",
+        "px-3 py-1 text-sm",
+        current === view ? "bg-ink text-cream" : "text-mute hover:text-ink",
       )}
     >
       {children}
@@ -277,14 +277,14 @@ function FeedGrid({ posts }: { posts: CalPost[] }) {
       <div className="mb-3 flex items-end justify-between">
         <div>
           <div className="text-lg font-semibold">@preachthegospel.store</div>
-          <div className="text-xs text-slate-400">
+          <div className="text-xs text-mute">
             Profile grid of this range, newest first
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-1 overflow-hidden rounded-2xl bg-white p-1 shadow-sm">
+      <div className="grid grid-cols-3 gap-1 overflow-hidden rounded-sm bg-paper p-1">
         {ordered.map((post) => (
-          <Link key={post.id} href={`/posts/${post.id}`} className={cn("relative aspect-square overflow-hidden rounded-lg bg-slate-100", typeAccent(post.postType))}>
+          <Link key={post.id} href={`/posts/${post.id}`} className={cn("relative aspect-square overflow-hidden rounded-sm bg-canvas", typeAccent(post.postType))}>
             {post.thumb ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={post.thumb} alt={post.title} className="h-full w-full object-cover" />

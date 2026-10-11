@@ -19,7 +19,7 @@ export function TeamManager({ people, actorRole, actorId }: { people: Person[]; 
 
   return (
     <div className="space-y-6">
-      <form action={action} className="grid gap-3 rounded-2xl border border-slate-200 bg-white shadow-sm p-4 md:grid-cols-4">
+      <form action={action} className="grid gap-3 border border-line bg-paper p-4 md:grid-cols-4">
         <Input name="name" placeholder="Name" required />
         <Input name="email" type="email" placeholder="Email" required />
         <select name="role" defaultValue="EDITOR" className={fieldClass}>
@@ -30,21 +30,21 @@ export function TeamManager({ people, actorRole, actorId }: { people: Person[]; 
         <Button type="submit" disabled={pending}>Add person</Button>
         {state?.error && <p className="md:col-span-4 text-sm text-[#E01F26]">{state.error}</p>}
         {state?.tempPassword && (
-          <p className="md:col-span-4 rounded-xl border border-slate-200 bg-white p-3 text-sm">
+          <p className="md:col-span-4 border border-line bg-paper p-3 text-sm">
             {state.email} can sign in with temporary password <span className="font-mono">{state.tempPassword}</span>. It is shown once.
           </p>
         )}
       </form>
 
       {reset && (
-        <p className="rounded-xl border border-slate-200 bg-white p-3 text-sm">
+        <p className="border border-line bg-paper p-3 text-sm">
           New password for {reset.email}: <span className="font-mono">{reset.tempPassword}</span>
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-x-auto border border-line bg-paper">
         <table className="w-full min-w-[680px] text-left text-sm">
-          <thead className="border-b border-slate-200 text-xs font-medium">
+          <thead className="border-b border-line text-xs font-medium">
             <tr>
               <th className="px-3 py-2">Name</th>
               <th className="px-3 py-2">Email</th>
@@ -54,7 +54,7 @@ export function TeamManager({ people, actorRole, actorId }: { people: Person[]; 
           </thead>
           <tbody>
             {people.map((person) => (
-              <tr key={person.id} className="border-b border-slate-200/10">
+              <tr key={person.id} className="border-b border-line">
                 <td className="px-3 py-3">{person.name}{person.id === actorId ? " (you)" : ""}</td>
                 <td className="px-3 py-3">{person.email}</td>
                 <td className="px-3 py-3">

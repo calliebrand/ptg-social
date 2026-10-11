@@ -92,7 +92,7 @@ The cron (and the **Publish due posts** button) will call Instagram only when al
 
 Approved alone does not publish. Use **Approve and schedule**.
 
-Vercel Cron is `*/5 * * * *` in `vercel.json`. Hobby plans only allow a daily cron, so use Pro for five-minute checks, or use **Publish due posts** on the Instagram page.
+Vercel Cron is `0 15 * * *` in `vercel.json` (daily at 15:00 UTC), which fits the Hobby plan. Use **Publish due posts** on Settings when a post should go out before the next run.
 
 ## Deploy on Vercel
 
@@ -163,5 +163,5 @@ Reels must be `video/mp4`. Carousels are 2–10 images, published as a Graph API
 
 - `META_APP_ID` and `META_APP_SECRET`, the redirect URI, a professional Instagram account linked to a Facebook Page, and (for accounts outside the app's testers) Meta App Review.
 - `BLOB_READ_WRITE_TOKEN` before a real publish, so Meta can download the file.
-- `CRON_SECRET` on Vercel, and a plan that allows the five-minute cron if you want posts to go out without pressing the button.
+- `CRON_SECRET` on Vercel. The Hobby cron runs once a day; **Publish due posts** covers anything that should go out sooner.
 - Production `DATABASE_URL`, `DIRECT_URL`, and `AUTH_SECRET`.

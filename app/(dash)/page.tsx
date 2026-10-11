@@ -57,23 +57,23 @@ export default async function DeskPage() {
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_0.8fr]">
-        <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-            <h2 className="text-base font-semibold">Coming up</h2>
+        <section className="border border-line bg-paper">
+          <div className="flex items-center justify-between border-b border-line px-4 py-3">
+            <h2 className="font-display text-2xl leading-none">Coming up</h2>
             <Link href="/calendar" className="text-xs font-medium underline">
               Calendar
             </Link>
           </div>
           <ul>
             {upcoming.map((post) => (
-              <li key={post.id} className="border-b border-slate-200/15 last:border-0">
-                <Link href={`/posts/${post.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-white/50">
+              <li key={post.id} className="border-b border-line last:border-0">
+                <Link href={`/posts/${post.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-canvas">
                   <div className="w-28 shrink-0 font-mono text-[10px] uppercase tracking-[0.08em]">
                     {post.scheduledAt ? chicagoStamp(post.scheduledAt) : "Unscheduled"}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-medium">{post.title}</div>
-                    <div className="text-xs text-slate-400">
+                    <div className="text-xs text-mute">
                       {postTypeLabel(post.postType)}
                     </div>
                   </div>
@@ -86,8 +86,8 @@ export default async function DeskPage() {
         </section>
 
         <div className="space-y-4">
-          <section className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4">
-            <h2 className="text-base font-semibold">Instagram</h2>
+          <section className="border border-line bg-paper p-4">
+            <h2 className="font-display text-2xl leading-none">Instagram</h2>
             <p className="mt-2 text-sm">
               {connection ? (
                 <>Connected as @{connection.username}. {due} approved post{due === 1 ? "" : "s"} waiting on the clock.</>
@@ -99,15 +99,15 @@ export default async function DeskPage() {
               {connection ? "Connection" : "Connect"}
             </Link>
           </section>
-          <section className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4">
-            <h2 className="text-base font-semibold">Needs a file</h2>
+          <section className="border border-line bg-paper p-4">
+            <h2 className="font-display text-2xl leading-none">Needs a file</h2>
             <ul className="mt-3 space-y-2">
               {gaps.map((post) => (
                 <li key={post.id}>
                   <Link href={`/posts/${post.id}`} className="text-sm underline">
                     {post.title}
                   </Link>
-                  <div className="text-xs text-slate-400">
+                  <div className="text-xs text-mute">
                     {post.assetStatus || "No asset"}
                   </div>
                 </li>
@@ -115,13 +115,13 @@ export default async function DeskPage() {
               {gaps.length === 0 && <li className="text-sm">Every open post has media.</li>}
             </ul>
           </section>
-          <section className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4">
-            <h2 className="text-base font-semibold">Activity</h2>
+          <section className="border border-line bg-paper p-4">
+            <h2 className="font-display text-2xl leading-none">Activity</h2>
             <ul className="mt-3 space-y-2">
               {activity.map((item) => (
                 <li key={item.id} className="text-sm">
                   {item.detail}
-                  <div className="text-xs text-slate-400">
+                  <div className="text-xs text-mute">
                     {chicagoStamp(item.createdAt)}
                   </div>
                 </li>
@@ -137,9 +137,9 @@ export default async function DeskPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm px-3 py-3">
-      <div className="text-xs font-medium text-slate-400">{label}</div>
-      <div className="text-3xl font-semibold tracking-tight">{value}</div>
+    <div className="border border-line bg-paper px-3 py-3">
+      <div className="text-xs font-medium text-mute">{label}</div>
+      <div className="font-display text-4xl leading-none">{value}</div>
     </div>
   );
 }

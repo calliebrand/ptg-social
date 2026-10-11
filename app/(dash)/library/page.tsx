@@ -21,13 +21,14 @@ export default async function LibraryPage() {
         actions={canEdit(user.role) ? <LibraryUpload /> : null}
       />
       {assets.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-sm">
-          Nothing in the library yet. Upload a JPEG, PNG, or MP4, or run the seed to pull in the five quote cards.
+        <div className="border border-dashed border-line bg-paper px-8 py-12">
+          <h2 className="font-display text-3xl leading-none">The library is empty</h2>
+          <p className="mt-2 max-w-md text-sm text-mute">Upload a JPEG, PNG, or MP4, or run the seed to pull in the five quote cards.</p>
         </div>
       )}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {assets.map((asset) => (
-          <article key={asset.id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <article key={asset.id} className="overflow-hidden border border-line bg-paper">
             {asset.mimeType.startsWith("video/") ? (
               <video src={asset.url} className="aspect-square w-full bg-[#0A0A0A] object-cover" controls />
             ) : (
@@ -36,7 +37,7 @@ export default async function LibraryPage() {
             )}
             <div className="space-y-2 p-3">
               <div className="truncate text-sm">{asset.filename}</div>
-              <div className="text-xs text-slate-400">
+              <div className="text-xs text-mute">
                 {asset.storage} · {Math.ceil(asset.size / 1024)} KB
               </div>
               <ul className="text-xs">
@@ -45,7 +46,7 @@ export default async function LibraryPage() {
                     <a className="underline" href={`/posts/${link.post.id}`}>{link.post.title}</a>
                   </li>
                 ))}
-                {asset.posts.length === 0 && <li className="text-slate-400">Not on a post</li>}
+                {asset.posts.length === 0 && <li className="text-mute">Not on a post</li>}
               </ul>
               {canEdit(user.role) && (
                 <form action={deleteAsset}>

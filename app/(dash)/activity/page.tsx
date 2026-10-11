@@ -16,15 +16,15 @@ export default async function ActivityPage() {
         title="Activity"
         lede="Approvals, edits, uploads, and publish attempts. The log is the paper trail for the desk."
       />
-      <ol className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <ol className="border border-line bg-paper">
         {items.map((item) => (
-          <li key={item.id} className="grid gap-1 border-b border-slate-200/10 px-4 py-3 md:grid-cols-[180px_1fr]">
-            <div className="text-xs text-slate-400">
+          <li key={item.id} className="grid gap-1 border-b border-line px-4 py-3 md:grid-cols-[180px_1fr]">
+            <div className="text-xs text-mute">
               {chicagoStamp(item.createdAt)}
             </div>
             <div>
               <div className="text-sm">{item.detail || item.action}</div>
-              <div className="text-xs text-slate-400">
+              <div className="text-xs text-mute">
                 {item.action}
                 {item.user?.name ? ` · ${item.user.name}` : ""}
               </div>

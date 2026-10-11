@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 export function AccountForm({ name, email, role }: { name: string; email: string; role: string }) {
   const [state, action, pending] = useActionState(updateAccount, null);
   return (
-    <form action={action} className="max-w-md space-y-3 rounded-2xl border border-slate-200 bg-white shadow-sm p-4">
-      <p className="text-xs font-medium text-slate-400">
+    <form action={action} className="max-w-md space-y-3 border border-line bg-paper p-4">
+      <p className="text-xs font-medium text-mute">
         {email} · {role.toLowerCase()}
       </p>
       <label className="block space-y-1">

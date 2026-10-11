@@ -60,9 +60,9 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <div className="text-xs font-medium text-slate-500">{label}</div>
+      <div className="text-xs font-medium text-mute">{label}</div>
       {children}
-      {hint && <p className="text-xs text-slate-400">{hint}</p>}
+      {hint && <p className="text-xs text-mute">{hint}</p>}
     </div>
   );
 }
@@ -165,15 +165,15 @@ export function PostEditor({
   const when = [form.scheduledDate, form.scheduledTime].filter(Boolean).join(" · ");
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#0e2340]/45 p-0 sm:items-center sm:p-4 md:p-6">
-      <div className="flex h-[100dvh] w-full flex-col overflow-hidden bg-white sm:h-[min(900px,calc(100dvh-2rem))] sm:max-w-6xl sm:rounded-2xl sm:shadow-2xl">
-        <header className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 md:px-5">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-sidebar/55 p-0 sm:items-center sm:p-4 md:p-6">
+      <div className="flex h-[100dvh] w-full flex-col overflow-hidden border border-line bg-paper sm:h-[min(900px,calc(100dvh-2rem))] sm:max-w-6xl">
+        <header className="flex items-center justify-between gap-3 border-b border-line bg-paper px-4 py-3 md:px-5">
           <div className="min-w-0">
-            <div className="text-xs text-slate-400">
+            <div className="text-[11px] uppercase tracking-[0.14em] text-mute">
               {post?.planNumber ? `Plan no. ${String(post.planNumber).padStart(2, "0")}` : "New post"}
               {post ? ` · ${statusLabel(post.status)}` : ""}
             </div>
-            <h1 className="truncate text-lg font-semibold tracking-tight text-slate-900">{form.title || "Create Post"}</h1>
+            <h1 className="truncate font-display text-3xl leading-none text-ink">{form.title || "Create Post"}</h1>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             {post && <StatusBadge status={post.status} />}
@@ -182,7 +182,7 @@ export function PostEditor({
                 {saving ? "Saving" : post ? "Save" : "Create draft"}
               </Button>
             )}
-            <Link href="/calendar" aria-label="Close" className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-100">
+            <Link href="/calendar" aria-label="Close" className="grid h-9 w-9 place-items-center rounded-sm text-mute hover:bg-canvas">
               <X className="h-4 w-4" />
             </Link>
           </div>
@@ -191,7 +191,7 @@ export function PostEditor({
       <div className="space-y-4 p-4 md:p-5">
 
         {post?.publishError && (
-          <div className="rounded-xl border border-[#E01F26]/40 bg-red-50 px-4 py-3 text-sm">
+          <div className="rounded-sm border border-[#E01F26]/40 bg-red-50 px-4 py-3 text-sm">
             <span className="text-xs font-medium text-[#E01F26]">Publish note</span>
             <p className="mt-1">{post.publishError}</p>
           </div>
@@ -202,14 +202,14 @@ export function PostEditor({
           </a>
         )}
         {post?.approvedByName && (
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-mute">
             Approved by {post.approvedByName}
             {post.approvedAtLabel ? ` · ${post.approvedAtLabel} CT` : ""}
           </p>
         )}
 
         {post && editable && (
-          <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-3">
+          <div className="flex flex-wrap gap-2 rounded-sm border border-line bg-canvas p-3">
             {post.status === "DRAFT" && (
               <Button type="button" variant="outline" disabled={dirty} onClick={() => onStatus("IN_REVIEW")}>
                 Submit for review
@@ -250,13 +250,13 @@ export function PostEditor({
               </Button>
             )}
             {dirty && <span className="self-center text-xs">Save before changing status.</span>}
-            <p className="w-full text-xs text-slate-500">
+            <p className="w-full text-xs text-mute">
               Nothing goes live unless an owner or admin approves it and the status is Scheduled. Editing an approved post sends it back to review.
             </p>
           </div>
         )}
 
-        <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <section className="space-y-4 border border-line bg-paper p-4">
           <Field label="Title">
             <Input value={form.title} disabled={!editable} onChange={(event) => update("title", event.target.value)} />
           </Field>
@@ -303,12 +303,12 @@ export function PostEditor({
           </div>
         </section>
 
-        <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <section className="space-y-4 border border-line bg-paper p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="text-xs font-medium text-slate-500">Caption</div>
+            <div className="text-xs font-medium text-mute">Caption</div>
             {editable && templates.length > 0 && (
               <select
-                className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs"
+                className="border border-line bg-paper px-2 py-1 text-xs"
                 defaultValue=""
                 onChange={(event) => {
                   const template = templates.find((item) => item.id === event.target.value);
@@ -346,7 +346,7 @@ export function PostEditor({
                 <button
                   key={set.id}
                   type="button"
-                  className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-600"
+                  className="rounded-sm border border-line bg-canvas px-2.5 py-1 text-xs text-mute"
                   onClick={() => update("hashtags", uniqueHashtags(form.hashtags, set.tags))}
                 >
                   {set.name}
@@ -354,7 +354,7 @@ export function PostEditor({
               ))}
             </div>
           )}
-          <div className="flex flex-wrap gap-4 text-xs font-medium text-slate-500">
+          <div className="flex flex-wrap gap-4 text-xs font-medium text-mute">
             <span className={cn(stats.overCharacters && "text-[#E01F26]")}>
               {stats.characters} / {IG_CAPTION_LIMIT} characters
             </span>
@@ -364,7 +364,7 @@ export function PostEditor({
           </div>
         </section>
 
-        <section className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-2">
+        <section className="grid gap-4 border border-line bg-paper p-4 md:grid-cols-2">
           <Field label="Bible reference / attribution">
             <Input
               value={form.bibleReference}
@@ -419,9 +419,9 @@ export function PostEditor({
         </section>
 
         {form.postType === "CAROUSEL" && (
-          <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <section className="space-y-3 border border-line bg-paper p-4">
             <div className="flex items-center justify-between">
-              <div className="text-xs font-medium text-slate-500">Carousel slides</div>
+              <div className="text-xs font-medium text-mute">Carousel slides</div>
               {editable && (
                 <Button
                   type="button"
@@ -436,7 +436,7 @@ export function PostEditor({
               )}
             </div>
             {form.slides.map((slide, index) => (
-              <div key={index} className="grid gap-2 rounded-xl border border-slate-200 p-3 md:grid-cols-[140px_1fr_auto]">
+              <div key={index} className="grid gap-2 rounded-sm border border-line p-3 md:grid-cols-[140px_1fr_auto]">
                 <Input
                   value={slide.heading}
                   disabled={!editable}
@@ -468,15 +468,15 @@ export function PostEditor({
               </div>
             ))}
             {form.slides.length === 0 && (
-              <p className="text-sm text-slate-500">Add a line of copy for each swipe. Images are attached below, in order.</p>
+              <p className="text-sm text-mute">Add a line of copy for each swipe. Images are attached below, in order.</p>
             )}
           </section>
         )}
 
         {post && (
-          <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <section className="space-y-3 border border-line bg-paper p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="text-xs font-medium text-slate-500">Media</div>
+              <div className="text-xs font-medium text-mute">Media</div>
               {editable && (
                 <div className="flex gap-2">
                   <Uploader postId={post.id} />
@@ -493,13 +493,13 @@ export function PostEditor({
               )}
             </div>
             {post.media.length === 0 && (
-              <p className="text-sm text-slate-500">No file on this post yet. Upload one or pull it from the library.</p>
+              <p className="text-sm text-mute">No file on this post yet. Upload one or pull it from the library.</p>
             )}
             <div className="grid gap-3 sm:grid-cols-2">
               {post.media.map((item, index) => (
-                <div key={item.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <div key={item.id} className="overflow-hidden border border-line bg-paper">
                   {item.asset.mimeType.startsWith("video/") ? (
-                    <video src={item.asset.url} className="aspect-[4/5] w-full bg-slate-900 object-cover" controls />
+                    <video src={item.asset.url} className="aspect-[4/5] w-full bg-ink object-cover" controls />
                   ) : (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={item.asset.url} alt={item.asset.alt || item.asset.filename} className="aspect-[4/5] w-full object-cover" />
@@ -508,10 +508,10 @@ export function PostEditor({
                     <div className="truncate text-xs">{item.asset.filename}</div>
                     {editable && (
                       <div className="flex gap-1">
-                        <button type="button" className="text-xs text-slate-500" onClick={() => moveAsset(post.id, item.asset.id, "up").then(() => router.refresh())} disabled={index === 0}>
+                        <button type="button" className="text-xs text-mute" onClick={() => moveAsset(post.id, item.asset.id, "up").then(() => router.refresh())} disabled={index === 0}>
                           Up
                         </button>
-                        <button type="button" className="text-xs text-slate-500" onClick={() => moveAsset(post.id, item.asset.id, "down").then(() => router.refresh())}>
+                        <button type="button" className="text-xs text-mute" onClick={() => moveAsset(post.id, item.asset.id, "down").then(() => router.refresh())}>
                           Down
                         </button>
                         <button type="button" className="text-xs text-[#E01F26]" onClick={() => detachAsset(post.id, item.asset.id).then(() => router.refresh())}>
@@ -552,51 +552,51 @@ export function PostEditor({
         )}
       </div>
 
-      <aside className="space-y-4 border-t border-slate-200 bg-[#f7f8fa] p-4 lg:border-l lg:border-t-0 md:p-5">
-        <div className="text-xs font-medium text-slate-500">Instagram preview</div>
-        <div className="mx-auto w-[280px] rounded-[2rem] border-[8px] border-[#111827] bg-white shadow-xl">
+      <aside className="space-y-4 border-t border-line bg-canvas p-4 lg:border-l lg:border-t-0 md:p-5">
+        <div className="text-xs font-medium text-mute">Instagram preview</div>
+        <div className="mx-auto w-[280px] rounded-[2rem] border-[8px] border-[#111827] bg-paper">
           <div className="mx-auto mt-2 h-4 w-24 rounded-full bg-[#111827]" />
           <div className="flex items-center gap-2 px-3 py-2">
-            <div className="grid h-7 w-7 place-items-center rounded-full bg-[#E01F26] text-[9px] font-bold text-white">P</div>
+            <div className="grid h-7 w-7 place-items-center rounded-sm bg-[#E01F26] text-[9px] font-bold text-white">P</div>
             <div className="min-w-0">
               <div className="truncate text-xs font-semibold">preachthegospel.store</div>
-              <div className="text-[10px] text-slate-400">Instagram</div>
+              <div className="text-[10px] text-mute">Instagram</div>
             </div>
-            <InstagramMark className="ml-auto h-4 w-4 text-slate-700" />
+            <InstagramMark className="ml-auto h-4 w-4 text-ink" />
           </div>
           {cover && cover.asset.mimeType.startsWith("image/") ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={cover.asset.url} alt="" className="aspect-[4/5] w-full object-cover" />
           ) : (
-            <div className="flex aspect-[4/5] items-center justify-center bg-slate-100 p-6 text-center">
+            <div className="flex aspect-[4/5] items-center justify-center bg-canvas p-6 text-center">
               <div>
-                <div className="text-2xl font-semibold leading-tight tracking-tight">{form.quoteText || form.title || "Quote"}</div>
+                <div className="font-display text-3xl leading-none">{form.quoteText || form.title || "Quote"}</div>
                 {form.bibleReference && (
-                  <div className="mt-3 text-[10px] font-medium uppercase tracking-wide text-slate-500">{form.bibleReference}</div>
+                  <div className="mt-3 text-[10px] font-medium uppercase tracking-wide text-mute">{form.bibleReference}</div>
                 )}
               </div>
             </div>
           )}
           <div className="space-y-2 px-3 py-3 text-[11px] leading-relaxed">
-            <div className="flex gap-2 text-slate-400">
+            <div className="flex gap-2 text-mute">
               <InstagramMark className="h-3.5 w-3.5" />
             </div>
             <p className="line-clamp-5 whitespace-pre-wrap">
               <span className="font-semibold">preachthegospel.store </span>
               {stats.combined || "Caption lands here."}
             </p>
-            <p className="text-[10px] text-slate-400">{when || "No date yet"}</p>
+            <p className="text-[10px] text-mute">{when || "No date yet"}</p>
           </div>
         </div>
 
         {post && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-            <div className="text-xs font-medium text-slate-500">Approval notes</div>
+          <div className="border border-line bg-paper p-3">
+            <div className="text-xs font-medium text-mute">Approval notes</div>
             <div className="mt-3 space-y-3">
-              {post.comments.length === 0 && <p className="text-sm text-slate-400">No notes yet.</p>}
+              {post.comments.length === 0 && <p className="text-sm text-mute">No notes yet.</p>}
               {post.comments.map((item) => (
                 <div key={item.id} className="border-l-2 border-[#E01F26] pl-3">
-                  <div className="text-[11px] text-slate-400">
+                  <div className="text-[11px] text-mute">
                     {item.authorName} · {item.authorRole.toLowerCase()} · {item.createdAt}
                   </div>
                   <p className="mt-1 whitespace-pre-wrap text-sm">{item.body}</p>
@@ -635,7 +635,7 @@ function Uploader({ postId }: { postId: string }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   return (
-    <label className="inline-flex h-8 cursor-pointer items-center rounded-lg border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 shadow-sm">
+    <label className="inline-flex h-8 cursor-pointer items-center border border-line bg-paper px-3 text-xs font-medium text-ink">
       {pending ? "Uploading" : "Upload"}
       <input
         type="file"
@@ -689,7 +689,7 @@ function LibraryDialog({
               key={asset.id}
               type="button"
               disabled={attached.has(asset.id)}
-              className="overflow-hidden rounded-xl border border-slate-200 text-left disabled:opacity-40"
+              className="overflow-hidden rounded-sm border border-line text-left disabled:opacity-40"
               onClick={async () => {
                 await onAttach(asset.id);
                 setOpen(false);
@@ -699,7 +699,7 @@ function LibraryDialog({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={asset.url} alt={asset.alt || asset.filename} className="aspect-square w-full object-cover" />
               ) : (
-                <div className="grid aspect-square place-items-center bg-slate-900 text-[10px] text-white">VIDEO</div>
+                <div className="grid aspect-square place-items-center bg-ink text-[10px] text-white">VIDEO</div>
               )}
               <div className="truncate px-2 py-1 text-[11px]">{attached.has(asset.id) ? "Attached" : asset.filename}</div>
             </button>

@@ -37,13 +37,13 @@ export default async function SettingsPage({
       />
 
       {error && (
-        <div className="mb-4 rounded-2xl border border-[#E01F26]/40 bg-red-50 p-4 text-sm">
+        <div className="mb-4 border border-ptg/40 bg-ptg/5 p-4 text-sm">
           {error}
           {params.detail ? ` ${params.detail}` : ""}
         </div>
       )}
       {params.connected && (
-        <div className="mb-4 rounded-2xl border border-slate-200 bg-white shadow-sm p-4 text-sm">
+        <div className="mb-4 border border-line bg-paper p-4 text-sm">
           Instagram is connected.
           {params.warning === "username"
             ? ` The account is not @${instagramUsername()}. Confirm this is the right Page before you schedule.`
@@ -52,13 +52,13 @@ export default async function SettingsPage({
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="rounded-2xl border border-slate-200 bg-white shadow-sm p-5">
-          <h2 className="text-xl font-semibold tracking-tight">Connection</h2>
+        <section className="border border-line bg-paper p-5">
+          <h2 className="font-display text-3xl leading-none">Connection</h2>
           {account ? (
             <div className="mt-3 space-y-2 text-sm">
               <p>Signed in as <strong>@{account.username}</strong></p>
               <p>Facebook Page: {account.pageName || account.pageId}</p>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-mute">
                 Instagram user {account.igUserId}
               </p>
             </div>
@@ -77,7 +77,7 @@ export default async function SettingsPage({
               )}
             </div>
           )}
-          <div className="mt-6 border-t border-slate-200/20 pt-4">
+          <div className="mt-6 border-t border-line pt-4">
             <h3 className="text-xs font-medium">Run the publisher now</h3>
             <p className="mt-2 text-sm">
               Same gate as the cron: status must be Scheduled, an owner or admin must have approved it, and the Central time must have passed.
@@ -91,9 +91,9 @@ export default async function SettingsPage({
           </div>
         </section>
 
-        <section className="rounded-2xl bg-[#0e2340] p-5 text-white">
+        <section className="bg-sidebar p-5 text-white">
           <div className="text-xs font-medium text-[#E01F26]">Needs a Meta app</div>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight text-white">Setup still on you</h2>
+          <h2 className="mt-2 font-display text-3xl leading-none text-cream">Setup still on you</h2>
           <ol className="mt-4 list-decimal space-y-2 pl-4 text-sm leading-relaxed text-white">
             <li>Create a Business app at developers.facebook.com and add Facebook Login plus Instagram.</li>
             <li>Set the OAuth redirect to your AUTH_URL plus /api/instagram/callback.</li>
@@ -102,7 +102,7 @@ export default async function SettingsPage({
             <li>In Development mode, add that Facebook user as an app admin or tester. Live mode needs App Review for the publish and insights permissions.</li>
             <li>Uploads that Instagram fetches must be public https JPEGs or MP4s. Set BLOB_READ_WRITE_TOKEN.</li>
           </ol>
-          <p className="mt-4 text-xs text-slate-300">The exact click-path is in the README under Meta app setup.</p>
+          <p className="mt-4 text-xs text-cream/60">The exact click-path is in the README under Meta app setup.</p>
         </section>
       </div>
     </div>

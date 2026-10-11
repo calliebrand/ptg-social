@@ -2,19 +2,19 @@ import { statusLabel } from "@/lib/posts";
 import { cn } from "@/lib/utils";
 
 const tones: Record<string, string> = {
-  DRAFT: "bg-slate-100 text-slate-600",
-  IN_REVIEW: "bg-amber-50 text-amber-700",
-  APPROVED: "bg-emerald-50 text-emerald-700",
-  SCHEDULED: "bg-blue-50 text-[#2F6BFF]",
-  PUBLISHED: "bg-slate-900 text-white",
-  FAILED: "bg-[#E01F26] text-white",
+  DRAFT: "border-line bg-transparent text-mute",
+  IN_REVIEW: "border-transparent bg-[#f3e2c4] text-[#6a4a12]",
+  APPROVED: "border-transparent bg-[#d7eadc] text-[#1d5a36]",
+  SCHEDULED: "border-transparent bg-ink text-cream",
+  PUBLISHED: "border-transparent bg-ink text-cream",
+  FAILED: "border-transparent bg-ptg text-white",
 };
 
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium",
+        "inline-flex items-center border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em]",
         tones[status] || tones.DRAFT,
         className,
       )}
@@ -25,53 +25,40 @@ export function StatusBadge({ status, className }: { status: string; className?:
 }
 
 export function typeTint(type: string, status?: string) {
-  if (status === "FAILED") return "border border-red-200 bg-red-50 text-red-950";
-  switch (type) {
-    case "QUOTE_CARD":
-      return "border border-rose-100 bg-rose-50 text-rose-950";
-    case "REEL":
-      return "border border-sky-100 bg-sky-50 text-sky-950";
-    case "CAROUSEL":
-      return "border border-violet-100 bg-violet-50 text-violet-950";
-    case "PHOTO":
-      return "border border-amber-100 bg-amber-50 text-amber-950";
-    case "ENGAGEMENT":
-      return "border border-emerald-100 bg-emerald-50 text-emerald-950";
-    default:
-      return "border border-slate-200 bg-white text-slate-800";
-  }
+  const edge = status === "FAILED" ? "border-l-ptg" : typeAccent(type);
+  return cn("border border-line border-l-2 bg-paper text-ink", edge);
 }
 
 export function typeAccent(type: string) {
   switch (type) {
     case "QUOTE_CARD":
-      return "border-l-rose-400";
+      return "border-l-ptg";
     case "REEL":
-      return "border-l-sky-400";
+      return "border-l-ink";
     case "CAROUSEL":
-      return "border-l-violet-400";
+      return "border-l-[#8a6a3b]";
     case "PHOTO":
-      return "border-l-amber-400";
+      return "border-l-[#c4a574]";
     case "ENGAGEMENT":
-      return "border-l-emerald-400";
+      return "border-l-[#3d6b4f]";
     default:
-      return "border-l-slate-300";
+      return "border-l-line";
   }
 }
 
 export function statusDot(status: string) {
   switch (status) {
     case "FAILED":
-      return "bg-[#E01F26]";
+      return "bg-ptg";
     case "SCHEDULED":
-      return "bg-[#2F6BFF]";
+      return "bg-ink";
     case "APPROVED":
-      return "bg-emerald-500";
+      return "bg-[#3d6b4f]";
     case "IN_REVIEW":
-      return "bg-amber-400";
+      return "bg-[#c4a574]";
     case "PUBLISHED":
-      return "bg-slate-900";
+      return "bg-ink";
     default:
-      return "bg-slate-300";
+      return "bg-line";
   }
 }
