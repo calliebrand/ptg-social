@@ -16,7 +16,9 @@ export default async function LoginPage({
   return (
     <main className="grid min-h-screen place-items-center bg-canvas px-4 py-12">
       <div className="card w-full max-w-[420px] p-8">
-        <BrandLogo />
+        <div className="flex justify-center">
+          <BrandLogo height={48} />
+        </div>
         <h1 className="mt-8 text-[28px] font-semibold tracking-[-0.03em]">Sign in</h1>
         <LoginForm callbackUrl={params.callbackUrl || "/"} />
         {demo && (

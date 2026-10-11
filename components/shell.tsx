@@ -145,13 +145,16 @@ export function Shell({
 
   const nav = (
     <div className="flex h-full flex-col">
-      <div className={cn("mb-6 flex items-center gap-2 px-1", collapsed && "flex-col px-0")}>
-        <Link href="/" onClick={() => setOpen(false)} aria-label="Preach the Gospel" className={cn("flex min-w-0 items-center", collapsed ? "w-10 justify-center" : "flex-1")}>
+      <div className={cn("relative mb-6 flex items-center", collapsed ? "flex-col px-0" : "justify-center")}>
+        <Link href="/" onClick={() => setOpen(false)} aria-label="Preach the Gospel" className={cn("flex items-center justify-center", collapsed && "w-10")}>
           <BrandLogo compact={collapsed} />
         </Link>
         <button
           type="button"
-          className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-mute hover:bg-canvas hover:text-ink"
+          className={cn(
+            "grid h-8 w-8 shrink-0 place-items-center rounded-lg text-mute hover:bg-canvas hover:text-ink",
+            collapsed ? "mt-2" : "absolute top-1/2 right-0 -translate-y-1/2",
+          )}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           onClick={() => setCollapsed((value) => !value)}
         >

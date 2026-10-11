@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export function BrandLogo({ compact = false }: { compact?: boolean }) {
+export function BrandLogo({ compact = false, height = 44 }: { compact?: boolean; height?: number }) {
   return (
     <Image
       src="/brand/preach-the-gospel-logo.png"
@@ -9,7 +9,7 @@ export function BrandLogo({ compact = false }: { compact?: boolean }) {
       height={261}
       priority
       className="max-w-full object-contain"
-      style={compact ? { width: 40, height: "auto" } : { height: 32, width: "auto" }}
+      style={compact ? { width: 40, height: "auto" } : { height, width: "auto" }}
     />
   );
 }
