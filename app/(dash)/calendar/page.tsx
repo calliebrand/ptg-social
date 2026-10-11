@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { CalendarBoard, type CalPost } from "@/components/calendar-board";
-import { StatusBadge, typeAccent } from "@/components/status-badge";
+import { StatusBadge } from "@/components/status-badge";
 import { requireUser } from "@/lib/session";
 import { canEdit } from "@/lib/permissions";
 import { POST_STATUSES, POST_TYPES, postTypeLabel, statusLabel } from "@/lib/posts";
@@ -101,32 +101,32 @@ export default async function CalendarPage({
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-[22px] font-medium leading-none tracking-[-0.035em] text-ink">Content Calendar</h1>
-        {canEdit(user.role) && (
-          <Button asChild>
-            <Link href="/posts/new">
-              <Plus className="h-3.5 w-3.5" strokeWidth={1.75} />
-              Create Post
-              <Kbd>C</Kbd>
-            </Link>
-          </Button>
-        )}
-      </div>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-1">
+      <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <h1 className="text-[28px] font-semibold leading-none tracking-[-0.03em] text-ink">Calendar</h1>
+        <div className="flex flex-wrap items-center gap-2">
           {view !== "list" && (
-            <Link href={prevHref} aria-label="Previous" className="grid h-8 w-8 place-items-center text-mute hover:bg-paper hover:text-ink">
-              <ChevronLeft className="h-4 w-4" />
-            </Link>
+            <div className="btn btn-subtle px-2">
+              <Link href={prevHref} aria-label="Previous" className="grid h-8 w-8 place-items-center text-mute hover:text-ink">
+                <ChevronLeft className="h-4 w-4" />
+              </Link>
+              <span className="min-w-40 px-1 text-center text-sm">{rangeLabel}</span>
+              <Link href={nextHref} aria-label="Next" className="grid h-8 w-8 place-items-center text-mute hover:text-ink">
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
           )}
-          <div className="min-w-44 text-center font-mono text-sm tabular-nums text-ink">{rangeLabel}</div>
-          {view !== "list" && (
-            <Link href={nextHref} aria-label="Next" className="grid h-8 w-8 place-items-center text-mute hover:bg-paper hover:text-ink">
-              <ChevronRight className="h-4 w-4" />
-            </Link>
+          {canEdit(user.role) && (
+            <Button asChild>
+              <Link href="/posts/new">
+                <Plus className="h-4 w-4" strokeWidth={1.75} />
+                Create Post
+                <Kbd>C</Kbd>
+              </Link>
+            </Button>
           )}
         </div>
+      </div>
+      <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
         <div className="seg">
           <ViewLink current={view} view="week" month={month.key} week={anchor}>
             Week
@@ -190,7 +190,7 @@ export default async function CalendarPage({
               Filter
             </button>
           </form>
-          <div className="overflow-x-auto border border-line bg-paper">
+          <div className="card overflow-x-auto">
             <table className="w-full min-w-[720px] text-left text-sm">
               <thead className="border-b border-line text-xs font-medium text-mute">
                 <tr>
@@ -283,17 +283,10 @@ function FeedGrid({ posts }: { posts: CalPost[] }) {
   const ordered = [...posts].sort((a, b) => (a.day && b.day ? (a.day < b.day ? 1 : -1) : 0));
   return (
     <div>
-      <div className="mb-3 flex items-end justify-between">
-        <div>
-          <div className="text-lg font-semibold">@preachthegospel.store</div>
-          <div className="text-xs text-mute">
-            Profile grid of this range, newest first
-          </div>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-1 overflow-hidden rounded-sm bg-paper p-1">
+      <div className="mb-4 text-lg font-semibold">@preachthegospel.store</div>
+      <div className="grid grid-cols-3 gap-3">
         {ordered.map((post) => (
-          <Link key={post.id} href={`/posts/${post.id}`} className={cn("relative aspect-square overflow-hidden rounded-sm bg-canvas", typeAccent(post.postType))}>
+          <Link key={post.id} href={`/posts/${post.id}`} className="card relative aspect-square overflow-hidden">
             {post.thumb ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={post.thumb} alt={post.title} className="h-full w-full object-cover" />

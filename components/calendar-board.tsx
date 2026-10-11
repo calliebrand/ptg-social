@@ -6,8 +6,7 @@ import { DndContext, DragOverlay, PointerSensor, useDraggable, useDroppable, use
 import { InstagramMark } from "@/components/instagram-mark";
 import Link from "next/link";
 import { reschedulePost } from "@/app/actions/posts";
-import { StatusBadge, statusDot, typeTint } from "@/components/status-badge";
-import { statusLabel } from "@/lib/posts";
+import { StatusBadge } from "@/components/status-badge";
 import { dayNumber, inMonth, weekdayLabels } from "@/lib/time";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -25,7 +24,7 @@ export type CalPost = {
 
 const START_HOUR = 7;
 const END_HOUR = 21;
-const ROW = 76;
+const ROW = 96;
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function clockMinutes(label: string) {
@@ -63,12 +62,11 @@ function Chip({ post, overlay = false, compact = false }: { post: CalPost; overl
       {...dragRest}
       data-post-id={post.id}
       className={cn(
-        "event-card flex overflow-hidden bg-paper",
-        typeTint(post.postType, post.status),
+        "event-card flex gap-2 rounded-xl border border-line bg-paper p-2 shadow-[0_1px_2px_rgba(16,24,40,0.05)]",
         isDragging && "scale-[1.02] opacity-90",
-        overlay && "w-52",
+        overlay && "w-56",
         post.status !== "PUBLISHED" && "cursor-grab active:cursor-grabbing",
-        compact ? "h-[58px]" : "min-h-[48px]",
+        compact ? "min-h-[72px]" : "min-h-[64px]",
       )}
       onPointerDown={(event) => {
         origin.current = { x: event.clientX, y: event.clientY };
@@ -83,18 +81,18 @@ function Chip({ post, overlay = false, compact = false }: { post: CalPost; overl
     >
       {post.thumb ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={post.thumb} alt="" className="w-11 shrink-0 self-stretch object-cover" />
+        <img src={post.thumb} alt="" className="h-10 w-10 shrink-0 rounded-lg object-cover" />
       ) : (
-        <span className="grid w-11 shrink-0 place-items-center bg-canvas text-mute">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#f3f4f6] text-mute">
           <InstagramMark className="h-3.5 w-3.5" />
         </span>
       )}
-      <div className="min-w-0 flex-1 px-1.5 py-1">
-        <div className="flex items-center gap-1">
-          <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", statusDot(post.status))} title={statusLabel(post.status)} />
-          <span className="font-mono text-[10px] tabular-nums text-mute">{post.timeLabel}</span>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center justify-between gap-1">
+          <span className="text-xs text-mute">{post.timeLabel}</span>
+          <StatusBadge status={post.status} className="px-1.5 py-0.5 text-[10px]" />
         </div>
-        <div className="mt-0.5 line-clamp-2 text-[11px] leading-tight">{post.title}</div>
+        <div className="mt-1 line-clamp-2 text-[13px] leading-snug text-ink">{post.title}</div>
       </div>
     </div>
   );
@@ -115,13 +113,13 @@ function DayCell({
       ref={setNodeRef}
       data-date={date}
       className={cn(
-        "min-h-28 border-b border-r border-line bg-paper p-1.5",
+        "min-h-36 border-b border-r border-line bg-paper p-2.5",
         muted && "bg-canvas text-mute",
         isOver && "bg-ptg/10",
       )}
     >
-      <div className={cn("mb-1.5 font-mono text-[11px] tabular-nums", muted ? "text-mute/70" : "text-mute")}>{dayNumber(date)}</div>
-      <div className="flex flex-col gap-1">
+      <div className={cn("mb-2 text-sm font-medium", muted ? "text-mute" : "text-ink")}>{dayNumber(date)}</div>
+      <div className="flex flex-col gap-2">
         {posts.map((post) => (
           <Chip key={post.id} post={post} />
         ))}
@@ -147,7 +145,7 @@ function WeekColumn({
     <div
       ref={setNodeRef}
       data-date={date}
-      className={cn("relative border-r border-line", isOver && "bg-ptg/10", date === today && "bg-[#f6ebe3]")}
+      className={cn("relative border-r border-line", isOver && "bg-ptg/10", date === today && "bg-ptg-soft/70")}
       style={{ height }}
     >
       {Array.from({ length: END_HOUR - START_HOUR }, (_, index) => (
@@ -245,8 +243,8 @@ export function CalendarBoard({
       onDragEnd={onDragEnd}
       onDragCancel={() => setActive(null)}
     >
-      <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_300px]">
-        <div className="overflow-hidden border border-line bg-paper">
+      <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="card overflow-hidden">
           {mode === "week" ? (
             <div className="overflow-x-auto">
               <div className="min-w-[860px]">
@@ -254,23 +252,23 @@ export function CalendarBoard({
                   <div />
                   {days.map((date, index) => (
                     <div key={date} className="border-l border-line px-2 py-2.5 text-center">
-                      <div className="text-[10px] uppercase tracking-[0.12em] text-mute">{weekdayLabels()[index]}</div>
+                      <div className="text-xs font-medium text-mute">{weekdayLabels()[index]}</div>
                       <div
                         className={cn(
-                          "mx-auto mt-1 text-[15px] font-medium leading-none tracking-[-0.03em]",
+                          "mx-auto mt-1 text-lg font-semibold leading-none tracking-[-0.03em]",
                           date === today ? "text-ptg" : "text-ink",
                         )}
                       >
                         {dayNumber(date)}
                       </div>
-                      <div className="mt-0.5 font-mono text-[10px] text-mute">{pretty(date)}</div>
+                      <div className="mt-1 text-xs text-mute">{pretty(date)}</div>
                     </div>
                   ))}
                 </div>
                 <div className="grid grid-cols-[64px_repeat(7,minmax(0,1fr))]">
                   <div>
                     {Array.from({ length: END_HOUR - START_HOUR }, (_, index) => (
-                      <div key={index} className="pr-2 text-right font-mono text-[10px] tabular-nums text-mute" style={{ height: ROW }}>
+                      <div key={index} className="pr-3 text-right text-xs tabular-nums text-mute" style={{ height: ROW }}>
                         <span className="-translate-y-2 inline-block">{hourLabel(START_HOUR + index)}</span>
                       </div>
                     ))}
@@ -286,7 +284,7 @@ export function CalendarBoard({
               <div className="min-w-[760px]">
                 <div className="grid grid-cols-7 border-b border-line">
                   {weekdayLabels().map((label) => (
-                    <div key={label} className="px-2 py-2 text-center text-[10px] uppercase tracking-[0.12em] text-mute">
+                    <div key={label} className="px-2 py-3 text-center text-xs font-medium text-mute">
                       {label}
                     </div>
                   ))}
@@ -323,28 +321,28 @@ function ScheduledPanel({
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: "day:unscheduled" });
   return (
-    <aside className="border border-line bg-paper p-3">
-      <div className="flex items-center justify-between border-b border-line px-1 pb-2">
-        <h2 className="text-[15px] font-medium tracking-[-0.02em]">Scheduled Posts</h2>
-        <span className="font-mono text-xs tabular-nums text-mute">{posts.length}</span>
+    <aside className="card p-4">
+      <div className="flex items-center justify-between px-1 pb-3">
+        <h2 className="text-base font-semibold">Scheduled posts</h2>
+        <span className="text-sm tabular-nums text-mute">{posts.length}</span>
       </div>
-      <ul className="mt-1 max-h-[640px] overflow-y-auto">
+      <ul className="max-h-[640px] overflow-y-auto">
         {posts.map((post) => (
-          <li key={post.id} className="border-b border-line last:border-0">
-            <Link href={`/posts/${post.id}`} className="flex items-center gap-2.5 px-1 py-2 hover:bg-canvas">
+          <li key={post.id} className="border-t border-line">
+            <Link href={`/posts/${post.id}`} className="flex items-center gap-3 px-1 py-3 hover:bg-canvas">
               {post.thumb ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={post.thumb} alt="" className="h-12 w-10 shrink-0 object-cover" />
+                <img src={post.thumb} alt="" className="h-12 w-12 shrink-0 rounded-lg object-cover" />
               ) : (
-                <span className="grid h-12 w-10 shrink-0 place-items-center border border-line bg-canvas text-mute">
-                  <InstagramMark className="h-3.5 w-3.5" />
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#f3f4f6] text-mute">
+                  <InstagramMark className="h-4 w-4" />
                 </span>
               )}
               <span className="min-w-0 flex-1">
-                <span className="block font-mono text-[10px] tabular-nums text-mute">
+                <span className="block text-sm font-medium text-ink">{post.title}</span>
+                <span className="mt-0.5 block text-xs text-mute">
                   {post.day === today ? "Today" : post.day ? pretty(post.day) : "Unscheduled"} · {post.timeLabel}
                 </span>
-                <span className="block truncate text-sm text-ink">{post.title}</span>
               </span>
               <StatusBadge status={post.status} />
             </Link>
@@ -352,15 +350,15 @@ function ScheduledPanel({
         ))}
         {posts.length === 0 && <li className="px-1 py-8 text-sm text-mute">Nothing is dated in this range.</li>}
       </ul>
-      <Link href="/posts" className="mt-3 inline-flex text-sm text-ptg underline-offset-4 hover:underline">
-        View All Posts
+      <Link href="/posts" className="mt-3 inline-flex px-1 text-sm font-medium text-ptg">
+        All posts
       </Link>
       <div
         ref={setNodeRef}
-        className={cn("mt-4 border border-dashed border-line p-3", isOver && "border-ptg bg-ptg/5")}
+        className={cn("mt-4 rounded-xl border border-dashed border-line p-3", isOver && "border-ptg bg-ptg/5")}
       >
-        <div className="text-[11px] uppercase tracking-[0.14em] text-mute">Unscheduled</div>
-        <p className="mt-1 text-xs leading-relaxed text-mute">Drop a post here to clear its date. The clock stays with the post when you move it to another day.</p>
+        <div className="text-sm font-medium text-ink">Unscheduled</div>
+        <p className="mt-1 text-xs text-mute">Drop here to clear the date.</p>
         <div className="mt-2 flex flex-col gap-1.5">
           {unscheduled.map((post) => (
             <Chip key={post.id} post={post} />

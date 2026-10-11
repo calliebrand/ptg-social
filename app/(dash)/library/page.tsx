@@ -15,20 +15,17 @@ export default async function LibraryPage() {
   return (
     <div>
       <PageHeader
-        kicker="Files"
         title="Media"
-        lede="Quote cards, photos, and reels you can attach to any post. On Vercel these go to Blob. Locally they stay in public/uploads."
         actions={canEdit(user.role) ? <LibraryUpload /> : null}
       />
       {assets.length === 0 && (
-        <div className="border border-dashed border-line bg-paper px-8 py-12">
-          <h2 className="text-[18px] font-medium tracking-[-0.03em]">The library is empty</h2>
-          <p className="mt-2 max-w-md text-sm text-mute">Upload a JPEG, PNG, or MP4, or run the seed to pull in the five quote cards.</p>
+        <div className="card border-dashed px-8 py-12">
+          <h2 className="text-lg font-semibold">The library is empty</h2>
         </div>
       )}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {assets.map((asset) => (
-          <article key={asset.id} className="overflow-hidden border border-line bg-paper">
+          <article key={asset.id} className="card overflow-hidden">
             {asset.mimeType.startsWith("video/") ? (
               <video src={asset.url} className="aspect-square w-full bg-[#0A0A0A] object-cover" controls />
             ) : (

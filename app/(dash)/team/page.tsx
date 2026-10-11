@@ -13,20 +13,16 @@ export default async function TeamPage() {
 
   return (
     <div>
-      <PageHeader
-        kicker="The room"
-        title="Team"
-        lede="Owners and admins approve posts and invite the desk. Editors draft. Viewers can read the calendar and nothing else."
-      />
+      <PageHeader title="Team" />
       {!canManageUsers(user.role) ? (
-        <ul className="border border-line bg-paper">
+        <ul className="card overflow-hidden">
           {people.map((person) => (
-            <li key={person.id} className="flex items-center justify-between border-b border-line px-3 py-2 text-[13px]">
-              <span className="flex items-center gap-2">
-                <span className="grid h-5 w-5 place-items-center bg-ink text-[10px] text-cream">{person.name.slice(0, 1).toUpperCase()}</span>
+            <li key={person.id} className="flex items-center justify-between border-b border-line px-5 py-4 text-sm last:border-0">
+              <span className="flex items-center gap-3">
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-ptg-soft text-xs font-semibold text-ptg">{person.name.slice(0, 1).toUpperCase()}</span>
                 {person.name}
               </span>
-              <span className="micro text-mute">{person.role.toLowerCase()}</span>
+              <span className="text-sm capitalize text-mute">{person.role.toLowerCase()}</span>
             </li>
           ))}
         </ul>

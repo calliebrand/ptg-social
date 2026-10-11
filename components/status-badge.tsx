@@ -2,19 +2,19 @@ import { statusLabel } from "@/lib/posts";
 import { cn } from "@/lib/utils";
 
 const tones: Record<string, string> = {
-  DRAFT: "border-line bg-transparent text-mute",
-  IN_REVIEW: "border-transparent bg-[#f3e2c4] text-[#6a4a12]",
-  APPROVED: "border-transparent bg-[#d7eadc] text-[#1d5a36]",
-  SCHEDULED: "border-transparent bg-ink text-cream",
-  PUBLISHED: "border-transparent bg-ink text-cream",
-  FAILED: "border-transparent bg-ptg text-white",
+  DRAFT: "bg-[#f3f4f6] text-[#4b5563]",
+  IN_REVIEW: "bg-[#fff6e8] text-[#9a6700]",
+  APPROVED: "bg-[#e8f8ee] text-[#157a3a]",
+  SCHEDULED: "bg-[#fdecee] text-[#c0161c]",
+  PUBLISHED: "bg-[#e8f8ee] text-[#157a3a]",
+  FAILED: "bg-[#fdecee] text-[#c0161c]",
 };
 
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.08em]",
+        "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
         tones[status] || tones.DRAFT,
         className,
       )}
@@ -49,16 +49,14 @@ export function typeAccent(type: string) {
 export function statusDot(status: string) {
   switch (status) {
     case "FAILED":
-      return "bg-ptg";
     case "SCHEDULED":
       return "bg-ptg";
     case "APPROVED":
-      return "bg-[#2f7d4a]";
-    case "IN_REVIEW":
-      return "bg-[#c4a574]";
     case "PUBLISHED":
-      return "bg-ink";
+      return "bg-[#157a3a]";
+    case "IN_REVIEW":
+      return "bg-[#d4a017]";
     default:
-      return "bg-[#b7aa9c]";
+      return "bg-[#c5cad3]";
   }
 }

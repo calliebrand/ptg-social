@@ -17,23 +17,19 @@ export default async function TemplatesPage() {
 
   return (
     <div>
-      <PageHeader
-        kicker="Reuse"
-        title="Templates"
-        lede="Caption blocks and hashtag sets drop into the editor. The 15% first-order line is already saved."
-      />
+      <PageHeader title="Templates" />
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="space-y-4">
           <h2 className="text-[15px] font-medium tracking-[-0.02em]">Captions</h2>
           {editable && (
-            <form action={createCaptionTemplate} className="space-y-2 border border-line bg-paper p-4">
+            <form action={createCaptionTemplate} className="space-y-2 card p-5">
               <Input name="name" placeholder="Name" required />
               <Textarea name="body" placeholder="Caption block" required />
               <Button type="submit">Save template</Button>
             </form>
           )}
           {templates.map((template) => (
-            <article key={template.id} className="border border-line bg-paper p-4">
+            <article key={template.id} className="card p-5">
               <h3 className="text-[15px] font-medium tracking-[-0.02em]">{template.name}</h3>
               <p className="mt-2 whitespace-pre-wrap text-sm">{template.body}</p>
               {editable && (
@@ -48,14 +44,14 @@ export default async function TemplatesPage() {
         <section className="space-y-4">
           <h2 className="text-[15px] font-medium tracking-[-0.02em]">Hashtag sets</h2>
           {editable && (
-            <form action={createHashtagSet} className="space-y-2 border border-line bg-paper p-4">
+            <form action={createHashtagSet} className="space-y-2 card p-5">
               <Input name="name" placeholder="Name" required />
               <Textarea name="tags" placeholder="#preachthegospel #christianstreetwear" required className="min-h-20" />
               <Button type="submit">Save set</Button>
             </form>
           )}
           {sets.map((set) => (
-            <article key={set.id} className="border border-line bg-paper p-4">
+            <article key={set.id} className="card p-5">
               <h3 className="text-[15px] font-medium tracking-[-0.02em]">{set.name}</h3>
               <p className="mt-2 font-mono text-xs">{set.tags}</p>
               {editable && (

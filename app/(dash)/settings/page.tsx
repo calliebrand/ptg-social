@@ -30,11 +30,7 @@ export default async function SettingsPage({
 
   return (
     <div>
-      <PageHeader
-        kicker="@preachthegospel.store"
-        title="Settings"
-        lede="Facebook Login connects the professional account. A Vercel Cron job publishes approved, scheduled posts when their Central time arrives."
-      />
+      <PageHeader title="Settings" />
 
       {error && (
         <div className="mb-4 border border-ptg/40 bg-ptg/5 p-4 text-sm">
@@ -43,7 +39,7 @@ export default async function SettingsPage({
         </div>
       )}
       {params.connected && (
-        <div className="mb-4 border border-line bg-paper p-4 text-sm">
+        <div className="card mb-4 p-4 text-sm">
           Instagram is connected.
           {params.warning === "username"
             ? ` The account is not @${instagramUsername()}. Confirm this is the right Page before you schedule.`
@@ -52,7 +48,7 @@ export default async function SettingsPage({
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="border border-line bg-paper p-5">
+        <section className="card p-6">
           <h2 className="text-[15px] font-medium tracking-[-0.02em]">Connection</h2>
           {account ? (
             <div className="mt-3 space-y-2 text-sm">
@@ -91,10 +87,9 @@ export default async function SettingsPage({
           </div>
         </section>
 
-        <section className="bg-sidebar p-5 text-white">
-          <div className="text-xs font-medium text-[#E01F26]">Needs a Meta app</div>
-          <h2 className="mt-2 text-[15px] font-medium tracking-[-0.02em] text-cream">Setup still on you</h2>
-          <ol className="mt-4 list-decimal space-y-2 pl-4 text-sm leading-relaxed text-white">
+        <section className="card p-6">
+          <h2 className="text-base font-semibold">Meta app</h2>
+          <ol className="mt-4 list-decimal space-y-2 pl-4 text-sm leading-relaxed text-mute">
             <li>Create a Business app at developers.facebook.com and add Facebook Login plus Instagram.</li>
             <li>Set the OAuth redirect to your AUTH_URL plus /api/instagram/callback.</li>
             <li>Put the app id and secret in META_APP_ID and META_APP_SECRET. {metaConfigured() ? "Those are set." : "They are empty right now."}</li>
@@ -102,7 +97,7 @@ export default async function SettingsPage({
             <li>In Development mode, add that Facebook user as an app admin or tester. Live mode needs App Review for the publish and insights permissions.</li>
             <li>Uploads that Instagram fetches must be public https JPEGs or MP4s. Set BLOB_READ_WRITE_TOKEN.</li>
           </ol>
-          <p className="mt-4 text-xs text-cream/60">The exact click-path is in the README under Meta app setup.</p>
+          <p className="mt-4 text-sm text-mute">The click-path is in the README under Meta app setup.</p>
         </section>
       </div>
     </div>

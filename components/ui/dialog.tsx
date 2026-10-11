@@ -15,10 +15,10 @@ export function DialogContent({
 }: React.ComponentProps<typeof DialogPrimitive.Content>) {
   return (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-sidebar/50" />
+      <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-[#111827]/30" />
       <DialogPrimitive.Content
         className={cn(
-          "fixed left-1/2 top-1/2 z-[60] max-h-[85vh] w-[min(100%-1.5rem,40rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto border border-line bg-paper p-6",
+          "card fixed left-1/2 top-1/2 z-[60] max-h-[85vh] w-[min(100%-1.5rem,40rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto p-6",
           className,
         )}
         {...props}

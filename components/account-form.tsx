@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 export function AccountForm({ name, email, role }: { name: string; email: string; role: string }) {
   const [state, action, pending] = useActionState(updateAccount, null);
   return (
-    <form action={action} className="max-w-md space-y-3 border border-line bg-paper p-4">
+    <form action={action} className="card max-w-md space-y-4 p-6">
       <p className="text-xs font-medium text-mute">
         {email} · {role.toLowerCase()}
       </p>

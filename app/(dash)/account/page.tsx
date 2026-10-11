@@ -8,11 +8,7 @@ export default async function AccountPage() {
   const record = await prisma.user.findUnique({ where: { id: user.id } });
   return (
     <div>
-      <PageHeader
-        kicker="You"
-        title="Account"
-        lede="Change the name on the activity log, or set a new password."
-      />
+      <PageHeader title="Account" />
       <AccountForm name={record?.name || user.name} email={user.email} role={user.role} />
     </div>
   );

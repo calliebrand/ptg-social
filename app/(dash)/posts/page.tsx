@@ -34,9 +34,7 @@ export default async function PostsPage({
   return (
     <div>
       <PageHeader
-        kicker="All copy"
         title="Posts"
-        lede="The 30-day plan lives here as drafts until you approve a slot."
         actions={
           canEdit(user.role) ? (
             <Button asChild>
@@ -64,7 +62,7 @@ export default async function PostsPage({
         </select>
         <button className="btn btn-primary">Filter</button>
       </form>
-      <div className="overflow-x-auto border border-line bg-paper">
+      <div className="card overflow-x-auto">
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="border-b border-line text-xs font-medium">
             <tr>

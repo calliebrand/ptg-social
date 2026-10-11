@@ -13,18 +13,14 @@ export default async function InsightsPage() {
 
   return (
     <div>
-      <PageHeader
-        kicker="After it is live"
-        title="Analytics"
-        lede="Likes, comments, reach, saves, and shares from the Instagram professional account once Facebook Login is connected."
-      />
+      <PageHeader title="Analytics" />
       {error && (
         <div className="border border-ptg/40 bg-ptg/5 p-4 text-sm">
           {error} Check that the token still has instagram_manage_insights and pages_read_engagement.
         </div>
       )}
       {data && !data.connected && (
-        <div className="border border-line bg-paper p-6">
+        <div className="card p-6">
           <h2 className="text-[15px] font-medium tracking-[-0.02em]">Not connected</h2>
           <p className="mt-2 max-w-xl text-sm">
             {metaConfigured()
@@ -44,7 +40,7 @@ export default async function InsightsPage() {
             <Metric label="Media" value={data.mediaCount} />
           </div>
           <p className="text-xs font-medium text-mute">@{data.username}</p>
-          <div className="overflow-x-auto border border-line bg-paper">
+          <div className="card overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead className="border-b border-line text-xs font-medium">
                 <tr>
@@ -87,7 +83,7 @@ export default async function InsightsPage() {
 
 function Metric({ label, value }: { label: string; value: number | null }) {
   return (
-    <div className="border border-line bg-paper p-4">
+    <div className="card p-5">
       <div className="text-xs font-medium text-mute">{label}</div>
       <div className="text-[28px] font-medium leading-none tracking-[-0.04em]">{value ?? "—"}</div>
     </div>

@@ -45,9 +45,9 @@ export function CommandPalette({
   }
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-start justify-center bg-sidebar/45 px-4 pt-[14vh]" onMouseDown={() => onOpenChange(false)}>
+    <div className="fixed inset-0 z-[70] flex items-start justify-center bg-[#111827]/30 px-4 pt-[14vh]" onMouseDown={() => onOpenChange(false)}>
       <div
-        className="modal-panel w-full max-w-[520px] overflow-hidden border border-line bg-paper"
+        className="modal-panel card w-full max-w-[560px] overflow-hidden"
         onMouseDown={(event) => event.stopPropagation()}
       >
         <input
@@ -55,7 +55,7 @@ export function CommandPalette({
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search pages and posts"
-          className="h-11 w-full border-0 bg-transparent px-3 text-[13px] outline-none placeholder:text-mute"
+          className="h-12 w-full border-0 bg-transparent px-4 text-sm outline-none placeholder:text-mute"
           onKeyDown={(event) => {
             if (event.key === "Escape") onOpenChange(false);
             if (event.key === "ArrowDown") {
@@ -75,7 +75,7 @@ export function CommandPalette({
             const showGroup = index === 0 || results[index - 1].group !== command.group;
             return (
               <div key={command.href + command.label}>
-                {showGroup && <div className="micro px-3 pb-1 pt-2 text-mute">{command.group}</div>}
+                {showGroup && <div className="px-4 pb-1 pt-3 text-xs font-medium text-mute">{command.group}</div>}
                 <button
                   type="button"
                   className={cn("flex h-8 w-full items-center px-3 text-left text-[13px]", index === active ? "bg-canvas" : "hover:bg-canvas")}

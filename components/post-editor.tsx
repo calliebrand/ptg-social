@@ -15,7 +15,6 @@ import { X } from "lucide-react";
 import { InstagramMark } from "@/components/instagram-mark";
 import { captionStats, IG_CAPTION_LIMIT, IG_HASHTAG_LIMIT, uniqueHashtags } from "@/lib/caption";
 import { canApprove, canEdit, type AppRole } from "@/lib/permissions";
-import { statusLabel } from "@/lib/posts";
 import type { PostInput } from "@/lib/validators";
 import { cn } from "@/lib/utils";
 
@@ -165,29 +164,25 @@ export function PostEditor({
   const when = [form.scheduledDate, form.scheduledTime].filter(Boolean).join(" · ");
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-sidebar/55 p-0 sm:items-center sm:p-4 md:p-6">
-      <div className="modal-panel flex h-[100dvh] w-full flex-col overflow-hidden border border-line bg-paper sm:h-[min(900px,calc(100dvh-2rem))] sm:max-w-6xl">
-        <header className="flex items-center justify-between gap-3 border-b border-line bg-paper px-4 py-3 md:px-5">
-          <div className="min-w-0">
-            <div className="text-[11px] uppercase tracking-[0.14em] text-mute">
-              {post?.planNumber ? `Plan no. ${String(post.planNumber).padStart(2, "0")}` : "New post"}
-              {post ? ` · ${statusLabel(post.status)}` : ""}
-            </div>
-            <h1 className="truncate text-[18px] font-medium tracking-[-0.03em] text-ink">{form.title || "Create Post"}</h1>
+    <div className="fixed inset-0 z-50 flex justify-end bg-[#111827]/30 p-3 md:p-4">
+      <div className="modal-panel flex h-full w-full max-w-[1080px] flex-col overflow-hidden rounded-2xl border border-line bg-canvas shadow-[0_24px_80px_rgba(16,24,40,0.18)]">
+        <header className="flex items-center justify-between gap-3 rounded-t-2xl bg-paper px-5 py-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <h1 className="truncate text-xl font-semibold tracking-[-0.03em] text-ink">{form.title || "Create post"}</h1>
+            {post && <StatusBadge status={post.status} />}
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            {post && <StatusBadge status={post.status} />}
             {editable && (
               <Button type="button" onClick={onSave} disabled={saving}>
                 {saving ? "Saving" : post ? "Save" : "Create draft"}
               </Button>
             )}
-            <Link href="/calendar" aria-label="Close" className="grid h-9 w-9 place-items-center rounded-sm text-mute hover:bg-canvas">
+            <Link href="/calendar" aria-label="Close" className="grid h-10 w-10 place-items-center rounded-xl text-mute hover:bg-canvas">
               <X className="h-4 w-4" />
             </Link>
           </div>
         </header>
-        <div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-[minmax(0,1fr)_360px]">
       <div className="space-y-4 p-4 md:p-5">
 
         {post?.publishError && (
@@ -209,7 +204,7 @@ export function PostEditor({
         )}
 
         {post && editable && (
-          <div className="flex flex-wrap gap-2 rounded-sm border border-line bg-canvas p-3">
+          <div className="card flex flex-wrap gap-2 p-4">
             {post.status === "DRAFT" && (
               <Button type="button" variant="outline" disabled={dirty} onClick={() => onStatus("IN_REVIEW")}>
                 Submit for review
@@ -249,14 +244,11 @@ export function PostEditor({
                 Retry publish
               </Button>
             )}
-            {dirty && <span className="self-center text-xs">Save before changing status.</span>}
-            <p className="w-full text-xs text-mute">
-              Nothing goes live unless an owner or admin approves it and the status is Scheduled. Editing an approved post sends it back to review.
-            </p>
+            {dirty && <span className="self-center text-xs text-mute">Save before changing status.</span>}
           </div>
         )}
 
-        <section className="space-y-4 border border-line bg-paper p-4">
+        <section className="card space-y-4 p-5">
           <Field label="Title">
             <Input value={form.title} disabled={!editable} onChange={(event) => update("title", event.target.value)} />
           </Field>
@@ -275,7 +267,7 @@ export function PostEditor({
                 <option value="ENGAGEMENT">Engagement prompt</option>
               </select>
             </Field>
-            <Field label="Asset status" hint="From the plan: mockup ready, shoot needed, or design from direction.">
+            <Field label="Asset status">
               <Input
                 value={form.assetStatus}
                 disabled={!editable}
@@ -303,12 +295,12 @@ export function PostEditor({
           </div>
         </section>
 
-        <section className="space-y-4 border border-line bg-paper p-4">
+        <section className="card space-y-4 p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="text-xs font-medium text-mute">Caption</div>
             {editable && templates.length > 0 && (
               <select
-                className="border border-line bg-paper px-2 py-1 text-xs"
+                className="field h-9 w-auto text-xs"
                 defaultValue=""
                 onChange={(event) => {
                   const template = templates.find((item) => item.id === event.target.value);
@@ -364,7 +356,7 @@ export function PostEditor({
           </div>
         </section>
 
-        <section className="grid gap-4 border border-line bg-paper p-4 md:grid-cols-2">
+        <section className="card grid gap-4 p-5 md:grid-cols-2">
           <Field label="Bible reference / attribution">
             <Input
               value={form.bibleReference}
@@ -419,7 +411,7 @@ export function PostEditor({
         </section>
 
         {form.postType === "CAROUSEL" && (
-          <section className="space-y-3 border border-line bg-paper p-4">
+          <section className="card space-y-3 p-5">
             <div className="flex items-center justify-between">
               <div className="text-xs font-medium text-mute">Carousel slides</div>
               {editable && (
@@ -474,7 +466,7 @@ export function PostEditor({
         )}
 
         {post && (
-          <section className="space-y-3 border border-line bg-paper p-4">
+          <section className="card space-y-3 p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="text-xs font-medium text-mute">Media</div>
               {editable && (
@@ -497,7 +489,7 @@ export function PostEditor({
             )}
             <div className="grid gap-3 sm:grid-cols-2">
               {post.media.map((item, index) => (
-                <div key={item.id} className="overflow-hidden border border-line bg-paper">
+                <div key={item.id} className="card overflow-hidden">
                   {item.asset.mimeType.startsWith("video/") ? (
                     <video src={item.asset.url} className="aspect-[4/5] w-full bg-ink object-cover" controls />
                   ) : (
@@ -552,8 +544,8 @@ export function PostEditor({
         )}
       </div>
 
-      <aside className="space-y-4 border-t border-line bg-canvas p-4 lg:border-l lg:border-t-0 md:p-5">
-        <div className="text-xs font-medium text-mute">Instagram preview</div>
+      <aside className="space-y-4 border-t border-line p-4 lg:border-l lg:border-t-0 md:p-5">
+        <div className="text-sm font-medium text-ink">Preview</div>
         <div className="mx-auto w-[280px] rounded-[2rem] border-[8px] border-[#111827] bg-paper">
           <div className="mx-auto mt-2 h-4 w-24 rounded-full bg-[#111827]" />
           <div className="flex items-center gap-2 px-3 py-2">
@@ -570,9 +562,9 @@ export function PostEditor({
           ) : (
             <div className="flex aspect-[4/5] items-center justify-center bg-canvas p-6 text-center">
               <div>
-                <div className="font-serif text-[28px] leading-none text-ink">{form.quoteText || form.title || "Quote"}</div>
+                <div className="text-2xl font-semibold leading-tight text-ink">{form.quoteText || form.title || "Quote"}</div>
                 {form.bibleReference && (
-                  <div className="mt-3 text-[10px] font-medium uppercase tracking-wide text-mute">{form.bibleReference}</div>
+                  <div className="mt-3 text-xs text-mute">{form.bibleReference}</div>
                 )}
               </div>
             </div>
@@ -590,8 +582,8 @@ export function PostEditor({
         </div>
 
         {post && (
-          <div className="border border-line bg-paper p-3">
-            <div className="text-xs font-medium text-mute">Approval notes</div>
+          <div className="card p-4">
+            <div className="text-sm font-medium text-ink">Notes</div>
             <div className="mt-3 space-y-3">
               {post.comments.length === 0 && <p className="text-sm text-mute">No notes yet.</p>}
               {post.comments.map((item) => (
@@ -635,7 +627,7 @@ function Uploader({ postId }: { postId: string }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   return (
-    <label className="inline-flex h-8 cursor-pointer items-center border border-line bg-paper px-3 text-xs font-medium text-ink">
+    <label className="btn btn-subtle cursor-pointer">
       {pending ? "Uploading" : "Upload"}
       <input
         type="file"
