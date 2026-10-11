@@ -196,9 +196,9 @@ function AreaChart({ points }: { points: { label: string; value: number }[] }) {
             x2={width}
             y1={height - 28 - ratio * (height - 56)}
             y2={height - 28 - ratio * (height - 56)}
-            stroke="#eef0f3"
+            stroke="#e5e5e5"
           />
-          <text x="0" y={height - 24 - ratio * (height - 56)} fontSize="11" fill="#6b7280">
+          <text x="0" y={height - 24 - ratio * (height - 56)} fontSize="11" fill="#737373">
             {Math.round(max * ratio)}
           </text>
         </g>
@@ -208,7 +208,7 @@ function AreaChart({ points }: { points: { label: string; value: number }[] }) {
       <circle cx={peak.x} cy={peak.y} r="5" fill="#e01f26" />
       <circle cx={peak.x} cy={peak.y} r="9" fill="none" stroke="#e01f26" strokeOpacity="0.35" />
       {ticks.map((point) => (
-        <text key={point.label + point.x} x={point.x} y={height - 6} textAnchor="middle" fontSize="11" fill="#6b7280">
+        <text key={point.label + point.x} x={point.x} y={height - 6} textAnchor="middle" fontSize="11" fill="#737373">
           {point.label}
         </text>
       ))}
@@ -231,7 +231,7 @@ function WeekBars({ counts }: { counts: Record<string, number> }) {
               className="w-full rounded-xl"
               style={{
                 height: `${Math.max(8, (value / max) * 150)}px`,
-                background: hot ? "#e01f26" : "#e8eaef",
+                background: hot ? "#E01F26" : "#e5e5e5",
               }}
             />
             <span className="text-xs text-mute">{day}</span>

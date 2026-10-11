@@ -16,7 +16,7 @@ export default async function LoginPage({
     <main className="grid min-h-screen place-items-center bg-canvas px-4 py-12">
       <div className="card w-full max-w-[420px] p-8">
         <div className="flex items-center gap-2.5">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-ptg text-sm font-semibold text-white">P</span>
+          <span className="grid h-9 w-9 place-items-center rounded-lg bg-ink text-sm font-semibold text-white">P</span>
           <span className="text-[15px] font-semibold tracking-[-0.02em]">Preach the Gospel</span>
         </div>
         <h1 className="mt-8 text-[28px] font-semibold tracking-[-0.03em]">Sign in</h1>

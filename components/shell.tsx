@@ -128,15 +128,15 @@ export function Shell({
         className={cn(
           "relative flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-medium",
           nested && !collapsed && "ml-3",
-          on ? "bg-ptg-soft text-ptg" : "text-mute hover:bg-canvas hover:text-ink",
+          on ? "bg-ptg-soft text-ink" : "text-mute hover:bg-canvas hover:text-ink",
           collapsed && "justify-center px-0",
         )}
       >
-        {on && <span className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-ptg" />}
+        {on && <span className="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-ink" />}
         <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} />
         {!collapsed && <span className="min-w-0 flex-1 truncate">{label}</span>}
         {!collapsed && typeof count === "number" && (
-          <span className={cn("text-xs tabular-nums", on ? "text-ptg/70" : "text-mute")}>{count}</span>
+          <span className={cn("text-xs tabular-nums", on ? "text-ink/60" : "text-mute")}>{count}</span>
         )}
       </Link>
     );
@@ -146,7 +146,7 @@ export function Shell({
     <div className="flex h-full flex-col">
       <div className={cn("mb-6 flex items-center gap-2 px-1", collapsed && "flex-col")}>
         <Link href="/" onClick={() => setOpen(false)} className="flex min-w-0 flex-1 items-center gap-2.5">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-ptg text-sm font-semibold text-white">P</span>
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-ink text-sm font-semibold text-white">P</span>
           {!collapsed && <span className="truncate text-[15px] font-semibold tracking-[-0.02em] text-ink">Preach</span>}
         </Link>
         <button
@@ -273,7 +273,7 @@ export function Shell({
             </Link>
             <Link
               href="/account"
-              className="grid h-10 w-10 place-items-center rounded-full bg-ptg text-xs font-semibold text-white"
+              className="grid h-10 w-10 place-items-center rounded-full bg-ink text-xs font-semibold text-white"
               aria-label="Account"
             >
               {initials}

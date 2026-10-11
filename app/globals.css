@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --canvas: #f6f7f9;
+  --canvas: #faf9f6;
   --paper: #ffffff;
-  --ink: #111827;
-  --line: #e7e9ee;
-  --mute: #6b7280;
+  --ink: #000000;
+  --line: #e5e5e5;
+  --mute: #737373;
   --sidebar: #ffffff;
+  --surface: #f0eeeb;
   --ptg: #e01f26;
-  --ptg-soft: #fdecee;
+  --ptg-soft: #f0eeeb;
   color-scheme: light;
 }
 
@@ -19,8 +20,9 @@
   --line: #2a2f3a;
   --mute: #9aa3b2;
   --sidebar: #12141a;
+  --surface: #262626;
   --ptg: #e01f26;
-  --ptg-soft: #3a1719;
+  --ptg-soft: #262626;
   color-scheme: dark;
 }
 
@@ -33,6 +35,7 @@
   --color-line: var(--line);
   --color-mute: var(--mute);
   --color-sidebar: var(--sidebar);
+  --color-surface: var(--surface);
   --color-ptg: var(--ptg);
   --color-ptg-soft: var(--ptg-soft);
 }
@@ -58,11 +61,11 @@ body {
 
 ::selection {
   background: #e01f26;
-  color: white;
+  color: #ffffff;
 }
 
 :focus-visible {
-  outline: 2px solid rgba(224, 31, 38, 0.55);
+  outline: 2px solid #000000;
   outline-offset: 2px;
 }
 
@@ -105,13 +108,13 @@ body {
 }
 
 .btn-primary {
-  background: #e01f26;
-  color: white;
-  box-shadow: 0 1px 2px rgba(224, 31, 38, 0.28);
+  background: #000000;
+  color: #ffffff;
+  box-shadow: none;
 }
 
 .btn-primary:hover {
-  background: #c81b21;
+  background: #222222;
 }
 
 .btn-subtle {
@@ -122,8 +125,8 @@ body {
 }
 
 .btn-subtle:hover {
-  background: #fafbfc;
-  border-color: #d5d8e0;
+  background: var(--surface);
+  border-color: var(--line);
 }
 
 .btn-ghost {
@@ -154,10 +157,10 @@ body {
   align-items: center;
   height: 20px;
   padding: 0 6px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--line);
   border-radius: 6px;
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--surface);
+  color: var(--mute);
   font-family: var(--font-mono-face), ui-monospace, monospace;
   font-size: 11px;
   font-weight: 500;
@@ -187,8 +190,8 @@ body {
 }
 
 .field:focus {
-  border-color: #e01f26;
-  box-shadow: 0 0 0 4px rgba(224, 31, 38, 0.12);
+  border-color: #000000;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
 }
 
 textarea.field {
@@ -221,8 +224,8 @@ textarea.field {
 }
 
 .seg-item.is-on {
-  background: var(--ptg-soft);
-  color: var(--ptg);
+  background: var(--surface);
+  color: var(--ink);
 }
 
 .event-card {
