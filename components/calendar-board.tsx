@@ -46,7 +46,7 @@ function hourLabel(hour: number) {
   return `${h} ${suffix}`;
 }
 
-function Chip({ post, overlay = false, compact = false }: { post: CalPost; overlay?: boolean; compact?: boolean }) {
+function Chip({ post, overlay = false }: { post: CalPost; overlay?: boolean }) {
   const router = useRouter();
   const origin = useRef<{ x: number; y: number } | null>(null);
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
@@ -62,11 +62,10 @@ function Chip({ post, overlay = false, compact = false }: { post: CalPost; overl
       {...dragRest}
       data-post-id={post.id}
       className={cn(
-        "event-card flex gap-2 rounded-xl border border-line bg-paper p-2 shadow-[0_1px_2px_rgba(16,24,40,0.05)]",
+        "event-card rounded-xl border border-line bg-paper p-2.5 shadow-[0_1px_2px_rgba(16,24,40,0.05)]",
         isDragging && "scale-[1.02] opacity-90",
         overlay && "w-56",
         post.status !== "PUBLISHED" && "cursor-grab active:cursor-grabbing",
-        compact ? "min-h-[72px]" : "min-h-[64px]",
       )}
       onPointerDown={(event) => {
         origin.current = { x: event.clientX, y: event.clientY };
@@ -79,21 +78,11 @@ function Chip({ post, overlay = false, compact = false }: { post: CalPost; overl
         if (dx < 6 && dy < 6) router.push(`/posts/${post.id}`);
       }}
     >
-      {post.thumb ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={post.thumb} alt="" className="h-10 w-10 shrink-0 rounded-lg object-cover" />
-      ) : (
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#f3f4f6] text-mute">
-          <InstagramMark className="h-3.5 w-3.5" />
-        </span>
-      )}
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center justify-between gap-1">
-          <span className="text-xs text-mute">{post.timeLabel}</span>
-          <StatusBadge status={post.status} className="px-1.5 py-0.5 text-[10px]" />
-        </div>
-        <div className="mt-1 line-clamp-2 text-[13px] leading-snug text-ink">{post.title}</div>
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs text-mute">{post.timeLabel}</span>
+        <StatusBadge status={post.status} className="shrink-0 px-2 py-0.5 text-[11px]" />
       </div>
+      <div className="mt-1.5 line-clamp-2 text-[13px] font-medium leading-snug text-ink">{post.title}</div>
     </div>
   );
 }
@@ -167,7 +156,7 @@ function WeekColumn({
         const top = ((clamped - START_HOUR * 60) / 60) * ROW + (index % 2) * 2;
         return (
           <div key={post.id} className="absolute left-1 right-1 z-10" style={{ top }}>
-            <Chip post={post} compact />
+            <Chip post={post} />
           </div>
         );
       })}

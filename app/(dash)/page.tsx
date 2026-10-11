@@ -173,29 +173,35 @@ function Stat({ label, value, hint }: { label: string; value: number; hint: stri
 function AreaChart({ points }: { points: { label: string; value: number }[] }) {
   const width = 640;
   const height = 220;
-  const max = Math.max(1, ...points.map((point) => point.value));
-  const step = points.length > 1 ? width / (points.length - 1) : width;
+  const max = Math.max(4, ...points.map((point) => point.value));
+  const padL = 28;
+  const plotW = width - padL;
+  const step = points.length > 1 ? plotW / (points.length - 1) : plotW;
   const coords = points.map((point, index) => ({
     ...point,
-    x: index * step,
+    x: padL + index * step,
     y: height - 28 - (point.value / max) * (height - 56),
   }));
   const line = coords.map((point) => `${point.x},${point.y}`).join(" ");
-  const area = `0,${height - 8} ${line} ${width},${height - 8}`;
+  const area = `${padL},${height - 8} ${line} ${width},${height - 8}`;
   const peak = coords.reduce((best, point) => (point.value > best.value ? point : best), coords[0]);
   const ticks = coords.filter((_, index) => index % Math.ceil(coords.length / 6) === 0 || index === coords.length - 1);
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="h-56 w-full" role="img" aria-label="Posts scheduled per day">
-      {[0.25, 0.5, 0.75, 1].map((ratio) => (
-        <line
-          key={ratio}
-          x1="0"
-          x2={width}
-          y1={height - 28 - ratio * (height - 56)}
-          y2={height - 28 - ratio * (height - 56)}
-          stroke="#eef0f3"
-        />
+      {[0, 0.5, 1].map((ratio) => (
+        <g key={ratio}>
+          <line
+            x1="28"
+            x2={width}
+            y1={height - 28 - ratio * (height - 56)}
+            y2={height - 28 - ratio * (height - 56)}
+            stroke="#eef0f3"
+          />
+          <text x="0" y={height - 24 - ratio * (height - 56)} fontSize="11" fill="#6b7280">
+            {Math.round(max * ratio)}
+          </text>
+        </g>
       ))}
       <polygon points={area} fill="rgba(224,31,38,0.12)" />
       <polyline points={line} fill="none" stroke="#e01f26" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
