@@ -1,6 +1,6 @@
 import type { NextAuthConfig } from "next-auth";
 
-const PUBLIC_PREFIXES = ["/login", "/api/auth", "/api/cron", "/api/instagram/callback", "/robots.txt"];
+const PUBLIC_PREFIXES = ["/login", "/api/auth", "/api/cron", "/api/instagram/callback", "/api/mcp", "/robots.txt"];
 
 export const authConfig = {
   trustHost: true,
