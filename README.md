@@ -65,6 +65,9 @@ Every variable the app reads is listed here and in `.env.example`.
 | `SEED_OWNER_EMAIL` | For seed | Default `mike@preachthegospel.store`. |
 | `SEED_OWNER_NAME` | For seed | Default `Mike`. |
 | `SEED_OWNER_PASSWORD` | For seed | Password set only when that owner is first created. |
+| `MCP_API_KEY` | For Claude | 32+ random characters (`openssl rand -hex 32`). Turns on the MCP endpoint at `/api/mcp/<MCP_API_KEY>`. Empty: the endpoint answers 503. |
+| `MCP_AGENT_EMAIL` | No | Defaults to `claude@preachthegospel.store`. The dashboard user the MCP endpoint acts as. |
+| `MCP_AGENT_NAME` | No | Defaults to `Claude`. Shown on comments, drafts, and the activity log. |
 | `SHOW_DEMO_LOGIN` | No | `true` prints the seed email and password on the login page. Leave `false` in production. |
 
 ## Roles
@@ -149,6 +152,33 @@ This is the part that does **not** work until you create a Meta app. The desk, c
 Media URLs must be public `https` links. Vercel Blob provides those. Files in `public/uploads` or `public/seed` are fine for the desk preview and will fail at publish time with a message that says so, until you re-upload them with Blob configured.
 
 Reels must be `video/mp4`. Carousels are 2–10 images, published as a Graph API carousel. Single quote cards, photos, and engagement posts publish as image posts. The caption sent to Instagram is the caption plus the hashtag field.
+
+## Claude (MCP connector)
+
+The desk exposes an MCP endpoint so Claude can draft posts, design graphics, and submit them for review.
+
+- URL: `https://<your-domain>/api/mcp/<MCP_API_KEY>`. The key is in the path because claude.ai custom connectors take a URL only. Treat the whole URL like a password. Rotate it by changing `MCP_API_KEY` and redeploying.
+- It acts as one dashboard user (`MCP_AGENT_EMAIL`), created as an **Editor** the first time it is used. It shows up on **Team**, and its drafts, comments, and uploads carry its name in **Activity**.
+- There is no tool to approve, schedule, or publish. Those stay with an owner or admin in the desk, so nothing Claude writes reaches Instagram until you choose **Approve and schedule**.
+- Posts that are already approved or scheduled are protected. A tool call that would change one is refused unless it says `allowSendBackToReview`, and then the post goes back to **In review** with its approval cleared, exactly as when an editor changes it in the desk.
+
+Tools:
+
+| Tool | What it does |
+| --- | --- |
+| `get_brand_guide` | Voice, caption structure, hashtag sets, caption templates, posting slots, visual system, fonts, and a reference quote-card SVG |
+| `list_posts`, `get_post` | Read the calendar and a post's full content, media, and comments |
+| `create_post`, `update_post` | Draft posts with a planned Central date and time; change any field |
+| `render_graphic` | Render an SVG with the brand fonts and return a preview. Saves nothing |
+| `add_graphic_to_post` | Render an SVG to a 1080px JPEG, upload it to Blob, attach it (attach order = carousel order) |
+| `add_media_from_url` | Download a public https image or MP4 (for example a Shopify product photo) and attach it |
+| `remove_media` | Detach one media item |
+| `submit_for_review`, `add_comment` | Hand a draft to the owner, with an optional note |
+| `delete_draft` | Delete a draft that the connector itself created |
+
+Graphics are rendered with [resvg](https://github.com/RazrFalcon/resvg) using only the fonts in `fonts/` (see `fonts/README.md`). SVGs cannot load files or URLs; embedded photos must be `data:` URIs. Rendering needs `BLOB_READ_WRITE_TOKEN` on Vercel, the same as uploads.
+
+To connect it in Claude: **Settings → Connectors → Add custom connector**, name it `PTG Social Desk`, paste the URL, and leave the OAuth fields empty.
 
 ## What is included
 

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { currentUser } from "@/lib/session";
 import { canEdit } from "@/lib/permissions";
 import { logActivity } from "@/lib/activity";
+import { attachAssetAs, detachAssetAs, touchApproval } from "@/lib/post-service";
 
 async function editor() {
   const user = await currentUser();
@@ -12,68 +13,26 @@ async function editor() {
   return user;
 }
 
-async function touchApproval(postId: string, userName: string) {
-  const post = await prisma.post.findUnique({ where: { id: postId } });
-  if (!post) return;
-  if (post.status === "APPROVED" || post.status === "SCHEDULED") {
-    await prisma.post.update({
-      where: { id: postId },
-      data: { status: "IN_REVIEW", approvedById: null, approvedAt: null },
-    });
-    await logActivity({
-      action: "post.revise",
-      entityType: "post",
-      entityId: postId,
-      detail: `${userName} changed media on "${post.title}", so it went back to review.`,
-    });
-  }
-}
-
 export async function attachAsset(postId: string, assetId: string) {
   const user = await editor();
   if (!user) return { ok: false as const, error: "You cannot edit media." };
-  const [post, asset] = await Promise.all([
-    prisma.post.findUnique({ where: { id: postId } }),
-    prisma.asset.findUnique({ where: { id: assetId } }),
-  ]);
-  if (!post || !asset) return { ok: false as const, error: "Missing post or asset." };
-  if (post.status === "PUBLISHED") {
-    return { ok: false as const, error: "Published posts keep the media they went out with." };
-  }
-  const count = await prisma.postAsset.count({ where: { postId } });
-  await prisma.postAsset.upsert({
-    where: { postId_assetId: { postId, assetId } },
-    update: {},
-    create: { postId, assetId, position: count },
-  });
-  await touchApproval(postId, user.name);
-  await logActivity({
-    userId: user.id,
-    action: "asset.attach",
-    entityType: "post",
-    entityId: postId,
-    detail: `${user.name} attached ${asset.filename} to "${post.title}".`,
-  });
+  const result = await attachAssetAs(user, postId, assetId);
+  if (!result.ok) return result;
   revalidatePath(`/posts/${postId}`);
   revalidatePath("/library");
   revalidatePath("/calendar");
-  return { ok: true as const };
+  return result;
 }
 
 export async function detachAsset(postId: string, assetId: string) {
   const user = await editor();
   if (!user) return { ok: false as const, error: "You cannot edit media." };
-  const post = await prisma.post.findUnique({ where: { id: postId } });
-  if (!post) return { ok: false as const, error: "That post is gone." };
-  if (post.status === "PUBLISHED") {
-    return { ok: false as const, error: "Published posts keep the media they went out with." };
-  }
-  await prisma.postAsset.deleteMany({ where: { postId, assetId } });
-  await touchApproval(postId, user.name);
+  const result = await detachAssetAs(user, postId, assetId);
+  if (!result.ok) return result;
   revalidatePath(`/posts/${postId}`);
   revalidatePath("/library");
   revalidatePath("/calendar");
-  return { ok: true as const };
+  return result;
 }
 
 export async function moveAsset(postId: string, assetId: string, direction: "up" | "down") {
