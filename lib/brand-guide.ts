@@ -2,8 +2,8 @@ import { FONT_FAMILIES } from "@/lib/render";
 
 /**
  * Returned by the MCP tool get_brand_guide so an assistant drafting posts
- * starts from the house style instead of guessing. Distilled from
- * data/plan.csv and scripts/posters.html.
+ * starts from the house style instead of guessing. Based on the live
+ * Instagram feed and a look at comparable brands (Nov 2026).
  */
 
 export const REFERENCE_QUOTE_CARD_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350">
@@ -41,44 +41,45 @@ export const REFERENCE_QUOTE_CARD_SVG = `<svg xmlns="http://www.w3.org/2000/svg"
 
 export const BRAND_GUIDE = `# Preach the Gospel (@preachthegospel.store) — house style
 
-Christian streetwear from Houston. preachthegospel.store. Pieces are made to order (ships in 14–21 days, no exchanges on tees).
+Christian streetwear from Houston. Bio: "MORE THAN MERCH. IT'S A MOVEMENT." Online at preachthegospel.store, plus pieces in person at the store. Many pieces are made to order (ships in 14–21 days). Close partner account: @revrodhtx; collab posts with them get the most engagement.
 
-## Voice
-- Short, direct, warm. Confident, never preachy. Speaks to everyday Houston life (the office, the gym, the 610, the taco line).
-- Open with a one-line hook (often a twist or a question), then the verse in quotes with its reference, then one or two lines that land it in real life, then a clear CTA, then the product tie with price.
-- One emoji at most per paragraph, usually one per post. No hype words, no ALL CAPS sentences.
-- Quote scripture word for word from the translation you name (default BSB). Never paraphrase a verse inside quotation marks, and never attribute words to scripture that are not there.
-- Spanish line ("El Movimiento", Siervo Local) is welcome where it fits the product.
+## What the feed actually looks like (from @preachthegospel.store, Nov 2026)
+- Photo-led. Almost every post is a real photograph, usually a carousel: people wearing the pieces, shot dark and moody (black backgrounds, tungsten or stage light, film grain), back prints facing camera, plus travel and everyday settings (the gym, a worship night, the pyramids, a waterfall) and product still-lifes (hats on a table, tees on a rack).
+- Type on photos, when used: tall condensed sans (Bebas Neue / Anton), all caps, bone #EDE6D6 on the dark photo, stacked and staggered left/right ("BLACK / FRIDAY / IS / COMING", "A NEW DECADE IS HERE", "NEW ARRIVALS" repeated).
+- Spec-sheet slides: small Space Mono text over a photo — product name left, price in brackets right ("MAKE DISCIPLES TEE        [ $35 ]"), a short "SPECS" list ([1] ... [2] ...).
+- Logo: the inverted PREACH THE GOSPEL. mark as a small watermark.
+- Occasional typographic tile (Bodoni "KING of KINGS" repeated).
+- Never: clip-art, stock-photo smiles, bright gradients, busy layouts.
 
-## Caption closers (caption templates in the desk)
-{{TEMPLATES}}
+## Captions (match these)
+- 2–4 short lines. Often all lowercase. Warm, plain, a little understated: "the wait is almost over. 🖤✨", "New season, same mission. 🕊️", "the details matter. ☕️✨".
+- Scripture posts: one line, then the verse with its reference ("📖 Romans 1:16 — ..."). Quote scripture word for word and name the reference; never paraphrase inside quotation marks.
+- One or two emojis from 🖤 🤍 🕊️ 🔥 ✨ 📖. No hype words, no walls of text.
+- 3 hashtags, at the end, in the hashtags field.
 
-## Hashtags
-- 4–8 per post, put in the hashtags field, not the caption. Always include #preachthegospel.
+## Hashtags (pick 3)
 {{HASHTAG_SETS}}
 
-## Content mix and pillars
-Scripture / brand verse, Brand story, Product / new drop, Product in life (Houston, everyday faith), Community, Witness / equipping, Education (remove purchase friction), Behind the scenes / trust.
-Formats: QUOTE_CARD (single 1080x1350 image), CAROUSEL (2–10 images, 1080x1350 each), PHOTO (product in life), ENGAGEMENT (this-or-that, quiz, prompt graphic), REEL (MP4 only; script goes in notes until a video is attached).
-CTAs that worked: Save, Share to Story, Tag a friend, Comment a number 1–5, Comment your answer, Shop link in bio.
-Usual slots (America/Chicago): 7:00 AM, 12:00 PM, 5:00 PM, 6:30 PM, 7:30 PM. Roughly one post a day, Mon/Tue/Thu/Sun heaviest.
+## Caption closers saved in the desk (use sparingly; the live feed rarely uses them)
+{{TEMPLATES}}
 
-## Visual system
-- Canvas: 1080x1350 (4:5). Always set viewBox="0 0 1080 1350".
-- Palette: Bone #F1EBDD (background), Ink #0A0A0A (type, frame), Revival Red #E01F26 (script accent, rule). Product posts may borrow a product color (Nazarene Red, Nazarene Navy).
-- Frame: thin Ink rectangle inset 43px, stroke 3.
-- Header (Space Mono 19, letter-spacing 5): "NO. 0X" left, short title right. Footer: "EST. HOUSTON TX" left, "PREACHTHEGOSPEL.STORE" right, upside-down Anton "PREACH THE GOSPEL." centered (the inverted-print signature).
-- Headline: Bodoni Moda Black, uppercase, stacked, horizontally condensed with scale(0.7 1) inside a translate(540 0) group so text-anchor middle stays centered. ~150px, tight letter-spacing.
-- Accent: one Yellowtail red script phrase that breaks across the stack, rotated about -8 to -12 degrees.
-- Kicker: Anton uppercase line under the stack, then a short red rule (84x5) and the reference in Space Mono.
-- Finish: light grain (feTurbulence) and a soft vignette, as in the reference SVG.
-- Leave generous empty space below the type block. Keep text inside the frame (x 85–995).
+## What similar brands do well (research, Nov 2026)
+- Rodeo in the Sky (99K): names every product and pairs it with its verse ("The Dust // Genesis 2:7"); teases a drop with a date, then posts "Now Live"; numbered restock carousels; minimal black tiles with one small centered line of scripture. Drop posts get its best engagement.
+- Elevated Faith (737K): posts daily; Reels with conversation hooks ("where'd you get your hoodie?" turns into a conversation about Jesus); countdowns ("drops tomorrow"); unboxing Reels; constant reposts of customers and ambassadors.
+- Sek Apparel: a single "everything on sale" grid of all products with the discount for Black Friday.
 
-## Rendering rules (render_graphic / add_graphic_to_post)
+## Formats
+QUOTE_CARD (single 1080x1350 image), CAROUSEL (2–10 images, 1080x1350 each, the default here), PHOTO (product in life), ENGAGEMENT (this-or-that, prompt), REEL (MP4 only; script goes in notes until a video exists).
+Usual slots (America/Chicago): 7:00 AM, 12:00 PM, 5:00 PM, 6:30 PM, 7:30 PM.
+
+## Making graphics
+- Canvas 1080x1350 (4:5). Always viewBox="0 0 1080 1350".
+- Photos: pass them in the tool's photos list and place them with <image href="photo:NAME" width="1080" height="1350" preserveAspectRatio="xMidYMid slice"/>. Sources: product photos on cdn.shopify.com (preachthegospel.store) and photos from the brand's own Instagram posts. Darken with a gradient where type sits; add light grain.
+- Palette: Ink #0A0A0A, Bone #EDE6D6 (type on photos), Bone paper #F1EBDD, Revival Red #E01F26 (sparingly).
 - Fonts available, and nothing else: ${FONT_FAMILIES.join(", ")}. Use these exact font-family names. Bodoni Moda is the Black cut only.
-- SVG has no text wrapping: break lines yourself, one <text> per line.
-- No external files or URLs. Photos inside an SVG must be data:image/... URIs; to post a product photo as-is, use add_media_from_url.
-- Preview with render_graphic before attaching. Check spacing, overlap, and that every word of a verse is present and correct.
+- SVG has no text wrapping: one <text> per line.
+- No other external files or URLs.
+- Preview with render_graphic before attaching. Check every word of a verse.
 `;
 
 export function brandGuideText(input: {

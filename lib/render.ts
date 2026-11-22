@@ -51,8 +51,10 @@ export function assertSafeSvg(svg: string) {
   const hrefs = svg.matchAll(/(?:xlink:)?href\s*=\s*["']([^"']*)["']/gi);
   for (const match of hrefs) {
     const value = match[1].trim();
-    if (!value.startsWith("#") && !value.startsWith("data:image/")) {
-      throw new RenderError(`External reference "${value.slice(0, 80)}" is not allowed. Embed images as data: URIs.`);
+    if (!value.startsWith("#") && !value.startsWith("data:image/") && !/^photo:[a-z0-9_-]{1,40}$/i.test(value)) {
+      throw new RenderError(
+        `External reference "${value.slice(0, 80)}" is not allowed. Pass photos in the photos list and use href="photo:NAME".`,
+      );
     }
   }
   if (/url\(\s*["']?(?!#)/i.test(svg)) {
@@ -69,8 +71,51 @@ function svgSize(svg: string) {
   return null;
 }
 
-export async function renderSvg(svg: string, options: { width?: number } = {}) {
+/** A photo already downloaded and checked by the caller. */
+export type SvgPhoto = { name: string; bytes: Buffer };
+
+/**
+ * Swap href="photo:NAME" for an embedded JPEG data URI. Photos are re-encoded
+ * (max 2160px on the long side) so the SVG stays a manageable size and any
+ * odd source format becomes plain JPEG.
+ */
+async function embedPhotos(svg: string, photos: SvgPhoto[]) {
+  const wanted = new Set(
+    [...svg.matchAll(/href\s*=\s*["']photo:([a-z0-9_-]{1,40})["']/gi)].map((m) => m[1].toLowerCase()),
+  );
+  if (!wanted.size) return svg;
+  const byName = new Map(photos.map((p) => [p.name.toLowerCase(), p]));
+  const missing = [...wanted].filter((name) => !byName.has(name));
+  if (missing.length) {
+    throw new RenderError(`The SVG uses photo:${missing.join(", photo:")} but no photo with that name was given.`);
+  }
+  const sharp = (await import("sharp")).default;
+  const uris = new Map<string, string>();
+  for (const name of wanted) {
+    const photo = byName.get(name)!;
+    let jpeg: Buffer;
+    try {
+      jpeg = await sharp(photo.bytes)
+        .rotate()
+        .resize(2160, 2160, { fit: "inside", withoutEnlargement: true })
+        .flatten({ background: "#ffffff" })
+        .jpeg({ quality: 88 })
+        .toBuffer();
+    } catch {
+      throw new RenderError(`photo:${name} is not an image the renderer can read.`);
+    }
+    uris.set(name, `data:image/jpeg;base64,${jpeg.toString("base64")}`);
+  }
+  return svg.replace(/(href\s*=\s*["'])photo:([a-z0-9_-]{1,40})(["'])/gi, (_all, open, name, close) => {
+    return `${open}${uris.get(String(name).toLowerCase())}${close}`;
+  });
+}
+
+export async function renderSvg(svg: string, options: { width?: number; photos?: SvgPhoto[] } = {}) {
   assertSafeSvg(svg);
+  if (options.photos?.length || /photo:/i.test(svg)) {
+    svg = await embedPhotos(svg, options.photos ?? []);
+  }
   const size = svgSize(svg);
   if (!size) throw new RenderError("Give the <svg> a viewBox, for example viewBox=\"0 0 1080 1350\".");
   const width = options.width ?? size.width;
