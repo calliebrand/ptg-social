@@ -287,7 +287,20 @@ async function fetchMedia(raw: string) {
   return { bytes, mimeType, filename };
 }
 
-const photosSchema = z
+// Clients holding an older copy of the tool list send photos as a JSON
+// string; accept that too.
+const parseJsonString = (value: unknown) => {
+  if (typeof value !== "string") return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return value;
+  }
+};
+
+const photosSchema = z.preprocess(
+  parseJsonString,
+  z
   .array(
     z.object({
       name: z.string().regex(/^[a-z0-9_-]{1,40}$/i, "Use letters, numbers, - or _."),
@@ -296,7 +309,8 @@ const photosSchema = z
   )
   .max(10)
   .optional()
-  .describe('Photos to place in the SVG. Reference each one as <image href="photo:NAME" .../>.');
+  .describe('Photos to place in the SVG. Reference each one as <image href="photo:NAME" .../>.'),
+);
 
 async function loadPhotos(list: { name: string; url: string }[] | undefined): Promise<SvgPhoto[]> {
   const photos: SvgPhoto[] = [];
