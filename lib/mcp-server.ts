@@ -18,7 +18,7 @@ import type { PostInput } from "@/lib/validators";
 import { POST_STATUSES, POST_TYPES } from "@/lib/posts";
 import { chicagoDateValue, chicagoTimeValue, rangeForDays, TZ } from "@/lib/time";
 import { captionStats } from "@/lib/caption";
-import { RenderError, renderSvg } from "@/lib/render";
+import { RenderError, renderSvg, type SvgPhoto } from "@/lib/render";
 import { MAX_UPLOAD_BYTES, storeBuffer } from "@/lib/storage";
 import { brandGuideText, REFERENCE_QUOTE_CARD_SVG } from "@/lib/brand-guide";
 
@@ -287,6 +287,30 @@ async function fetchMedia(raw: string) {
   return { bytes, mimeType, filename };
 }
 
+const photosSchema = z
+  .array(
+    z.object({
+      name: z.string().regex(/^[a-z0-9_-]{1,40}$/i, "Use letters, numbers, - or _."),
+      url: z.string().url().describe("Public https image: a list_media URL or a cdn.shopify.com product photo."),
+    }),
+  )
+  .max(10)
+  .optional()
+  .describe('Photos to place in the SVG. Reference each one as <image href="photo:NAME" .../>.');
+
+async function loadPhotos(list: { name: string; url: string }[] | undefined): Promise<SvgPhoto[]> {
+  const photos: SvgPhoto[] = [];
+  for (const item of list ?? []) {
+    const media = await fetchMedia(item.url);
+    if (!media.mimeType.startsWith("image/")) {
+      throw new RenderError(`photo:${item.name} is ${media.mimeType || "not an image"}. Use an image URL.`);
+    }
+    if (media.bytes.length > 25 * 1024 * 1024) throw new RenderError(`photo:${item.name} is larger than 25 MB.`);
+    photos.push({ name: item.name, bytes: media.bytes });
+  }
+  return photos;
+}
+
 export function createMcpServer() {
   const server = new McpServer(
     { name: "ptg-social-desk", version: "1.0.0" },
@@ -310,7 +334,7 @@ export function createMcpServer() {
       return {
         content: [
           { type: "text", text: guide },
-          { type: "text", text: `Reference quote card (No. 01, Mark 16:15) as SVG:\n\n${REFERENCE_QUOTE_CARD_SVG}` },
+          { type: "text", text: `Typographic tile (bone paper, Bodoni stack), the one non-photo layout in use, as SVG:\n\n${REFERENCE_QUOTE_CARD_SVG}` },
         ],
       };
     },
@@ -352,6 +376,55 @@ export function createMcpServer() {
         take: limit ?? 60,
       });
       return ok({ count: posts.length, posts: posts.map((post) => serializePost(post, false)) });
+    },
+  );
+
+  server.registerTool(
+    "list_media",
+    {
+      title: "List media library",
+      description:
+        "Photos and videos uploaded to the desk's Media page, newest first, with public URLs. Use these URLs in the photos list of render_graphic / add_graphic_to_post, or with add_media_from_url.",
+      inputSchema: {
+        search: z.string().max(100).optional().describe("Match against filename or alt text."),
+        kind: z.enum(["image", "video", "all"]).optional(),
+        limit: z.number().int().min(1).max(100).optional(),
+      },
+      annotations: { readOnlyHint: true },
+    },
+    async ({ search, kind, limit }) => {
+      const assets = await prisma.asset.findMany({
+        where: {
+          url: { startsWith: "https://" },
+          ...(kind === "image" ? { mimeType: { startsWith: "image/" } } : {}),
+          ...(kind === "video" ? { mimeType: { startsWith: "video/" } } : {}),
+          ...(search
+            ? {
+                OR: [
+                  { filename: { contains: search, mode: "insensitive" as const } },
+                  { alt: { contains: search, mode: "insensitive" as const } },
+                ],
+              }
+            : {}),
+        },
+        orderBy: { createdAt: "desc" },
+        take: limit ?? 40,
+        include: { posts: { select: { postId: true } } },
+      });
+      return ok({
+        count: assets.length,
+        media: assets.map((a) => ({
+          assetId: a.id,
+          url: a.url,
+          filename: a.filename,
+          mimeType: a.mimeType,
+          alt: a.alt,
+          width: a.width,
+          height: a.height,
+          usedOnPosts: a.posts.length,
+          uploadedAt: a.createdAt.toISOString(),
+        })),
+      });
     },
   );
 
@@ -459,15 +532,16 @@ export function createMcpServer() {
     {
       title: "Preview graphic",
       description:
-        "Render an SVG (viewBox 0 0 1080 1350) with the brand fonts and return a half-size preview image. Saves nothing. Use it to check a design before add_graphic_to_post.",
+        "Render an SVG (viewBox 0 0 1080 1350) with the brand fonts and return a half-size preview image. Saves nothing. Use it to check a design before add_graphic_to_post. Photos go in the photos list and are referenced as href=\"photo:NAME\".",
       inputSchema: {
         svg: z.string().min(20).describe("A complete <svg> document. Fonts: see get_brand_guide."),
+        photos: photosSchema,
       },
       annotations: { readOnlyHint: true },
     },
-    async ({ svg }) => {
+    async ({ svg, photos }) => {
       try {
-        const preview = await renderSvg(svg, { width: 540 });
+        const preview = await renderSvg(svg, { width: 540, photos: await loadPhotos(photos) });
         return {
           content: [
             { type: "image", data: preview.jpeg.toString("base64"), mimeType: "image/jpeg" },
@@ -490,25 +564,27 @@ export function createMcpServer() {
       inputSchema: {
         postId: z.string().min(1),
         svg: z.string().min(20),
+        photos: photosSchema,
         filename: z.string().max(80).optional().describe("e.g. 'q23_john8-12.jpg'."),
         alt: z.string().max(300).describe("Alt text describing the graphic, including the verse."),
         allowSendBackToReview: z.boolean().optional(),
       },
     },
-    async ({ postId, svg, filename, alt, allowSendBackToReview }) => {
+    async ({ postId, svg, photos, filename, alt, allowSendBackToReview }) => {
       const post = await prisma.post.findUnique({ where: { id: postId } });
       if (!post) return fail("No post with that id.");
       if (post.status === "PUBLISHED") return fail("Published posts keep the media they went out with.");
       if (LOCKED.includes(post.status) && !allowSendBackToReview) return fail(lockedMessage(post));
       try {
-        const full = await renderSvg(svg);
+        const loaded = await loadPhotos(photos);
+        const full = await renderSvg(svg, { photos: loaded });
         const actor = await agentActor();
         const name = (filename || `${post.title}`).replace(/\.(png|jpe?g|svg)$/i, "") + ".jpg";
         const asset = await attachBytes(actor, postId, full.jpeg, name, "image/jpeg", alt, {
           width: full.width,
           height: full.height,
         });
-        const preview = await renderSvg(svg, { width: 360 });
+        const preview = await renderSvg(svg, { width: 360, photos: loaded });
         return {
           content: [
             { type: "image", data: preview.jpeg.toString("base64"), mimeType: "image/jpeg" },
