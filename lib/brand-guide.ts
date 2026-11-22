@@ -74,7 +74,7 @@ Usual slots (America/Chicago): 7:00 AM, 12:00 PM, 5:00 PM, 6:30 PM, 7:30 PM.
 
 ## Making graphics
 - Canvas 1080x1350 (4:5). Always viewBox="0 0 1080 1350".
-- Photos: pass them in the tool's photos list and place them with <image href="photo:NAME" width="1080" height="1350" preserveAspectRatio="xMidYMid slice"/>. Sources: product photos on cdn.shopify.com (preachthegospel.store) and photos from the brand's own Instagram posts. Darken with a gradient where type sits; add light grain.
+- Photos: pass them in the tool's photos list and place them with <image href="photo:NAME" width="1080" height="1350" preserveAspectRatio="xMidYMid slice"/>. Sources: the desk's Media library (list_media: shoot photos uploaded there) first, then product photos on cdn.shopify.com (mostly white-background shots; good for product grids and spec slides, not as full-bleed backgrounds). Darken with a gradient where type sits; add light grain.
 - Palette: Ink #0A0A0A, Bone #EDE6D6 (type on photos), Bone paper #F1EBDD, Revival Red #E01F26 (sparingly).
 - Fonts available, and nothing else: ${FONT_FAMILIES.join(", ")}. Use these exact font-family names. Bodoni Moda is the Black cut only.
 - SVG has no text wrapping: one <text> per line.

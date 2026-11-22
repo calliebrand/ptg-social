@@ -291,7 +291,7 @@ const photosSchema = z
   .array(
     z.object({
       name: z.string().regex(/^[a-z0-9_-]{1,40}$/i, "Use letters, numbers, - or _."),
-      url: z.string().url().describe("Public https image, e.g. a cdn.shopify.com product photo or an image from the brand's own Instagram posts."),
+      url: z.string().url().describe("Public https image: a list_media URL or a cdn.shopify.com product photo."),
     }),
   )
   .max(10)
@@ -376,6 +376,55 @@ export function createMcpServer() {
         take: limit ?? 60,
       });
       return ok({ count: posts.length, posts: posts.map((post) => serializePost(post, false)) });
+    },
+  );
+
+  server.registerTool(
+    "list_media",
+    {
+      title: "List media library",
+      description:
+        "Photos and videos uploaded to the desk's Media page, newest first, with public URLs. Use these URLs in the photos list of render_graphic / add_graphic_to_post, or with add_media_from_url.",
+      inputSchema: {
+        search: z.string().max(100).optional().describe("Match against filename or alt text."),
+        kind: z.enum(["image", "video", "all"]).optional(),
+        limit: z.number().int().min(1).max(100).optional(),
+      },
+      annotations: { readOnlyHint: true },
+    },
+    async ({ search, kind, limit }) => {
+      const assets = await prisma.asset.findMany({
+        where: {
+          url: { startsWith: "https://" },
+          ...(kind === "image" ? { mimeType: { startsWith: "image/" } } : {}),
+          ...(kind === "video" ? { mimeType: { startsWith: "video/" } } : {}),
+          ...(search
+            ? {
+                OR: [
+                  { filename: { contains: search, mode: "insensitive" as const } },
+                  { alt: { contains: search, mode: "insensitive" as const } },
+                ],
+              }
+            : {}),
+        },
+        orderBy: { createdAt: "desc" },
+        take: limit ?? 40,
+        include: { posts: { select: { postId: true } } },
+      });
+      return ok({
+        count: assets.length,
+        media: assets.map((a) => ({
+          assetId: a.id,
+          url: a.url,
+          filename: a.filename,
+          mimeType: a.mimeType,
+          alt: a.alt,
+          width: a.width,
+          height: a.height,
+          usedOnPosts: a.posts.length,
+          uploadedAt: a.createdAt.toISOString(),
+        })),
+      });
     },
   );
 
